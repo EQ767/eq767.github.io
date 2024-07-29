@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eric's音链预览器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 300px;
+        }
+        button {
+            padding: 8px 16px;
+            font-size: 14px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 10px;
+        }
+        #temporaryMessage {
+            color: #777;
+            font-style: italic;
+            display: none;
+        }
+        #player {
+            display: none;
+            margin-top: 20px;
+            width: 100%;
+            height: 60px;
+            border: none;
+        }
+        .toggle-switch {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .toggle-switch input[type="checkbox"] {
+            display: none;
+        }
+        .toggle-switch label {
+            position: relative;
+            width: 50px;
+            height: 25px;
+            background-color: #ccc;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .toggle-switch label::after {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 21px;
+            height: 21px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+        .toggle-switch input[type="checkbox"]:checked + label {
+            background-color: #4CAF50;
+        }
+        .toggle-switch input[type="checkbox"]:checked + label::after {
+            transform: translateX(25px);
+        }
+        .toggle-switch span {
+            margin-left: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>音链获取下载器</h1>
+    <form id="musicForm">
+        <label for="shareLink">请输入往抑云的分享链接：</label>
+        <input type="text" id="shareLink" name="shareLink" required>
+        <button type="button" id="parseButton">获取</button>
+    </form>
+    <p id="result"></p>
+    <p id="temporaryMessage" style="display:none;">只能获取免费的歌曲链接欣赏，可与本站音乐播放器配合使用</p>
+    <iframe id="player" src="" allow="autoplay"></iframe>
+
+    <div class="toggle-switch">
+        <input type="checkbox" id="copyToggle" checked>
+        <label for="copyToggle"></label>
+        <span>是否复制预览链接</span>
+    </div>
+    <script>
+        document.getElementById('parseButton').addEventListener('click', function() {
+            const shareLink = document.getElementById('shareLink').value;
+            const songId = extractSongId(shareLink);
+
+            if (songId) {
+                document.getElementById('result').textContent = `尝试获取的编号：${songId}`;
+                const downloadUrl = `https://music.163.com/song/media/outer/url?id=${songId}.mp3`;
+                
+                const player = document.getElementById('player');
+                player.src = downloadUrl;
+                player.style.display = 'block';
+                
+                const tempMessage = document.getElementById('temporaryMessage');
+                tempMessage.style.display = 'inline';
+                setTimeout(() => {
+                    tempMessage.style.display = 'none';
+                }, 3000);  // 显示 3 秒钟
+
+                const copyToggle = document.getElementById('copyToggle').checked;
+                if (copyToggle) {
+                    navigator.clipboard.writeText(downloadUrl).then(() => {
+                        alert('神秘链接已复制到剪贴板');
+                    }).catch(err => {
+                        console.error('无法复制链接: ', err);
+                    });
+                }
+            } else {
+                document.getElementById('result').textContent = '无法获取许可编号，或不正确的链接。';
+                document.getElementById('player').style.display = 'none';
+            }
+        });
+
+        function extractSongId(shareLink) {
+            const match = shareLink.match(/(?:id=|\/)(\d+)/);
+            return match ? match[1] : null;
+        }
+    </script>
+</body>
+</html>

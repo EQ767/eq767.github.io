@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eric's在线文档编辑器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        #editor-container {
+            width: 80%;
+            max-width: 800px;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 60px;
+        }
+
+        #toolbar {
+            background-color: #eee;
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            width: 80%;
+            max-width: 800px;
+            z-index: 1000;
+        }
+
+        #toolbar input[type="text"] {
+            flex: 1;
+            margin-right: 10px;
+            padding: 5px;
+        }
+
+        #toolbar button {
+            background: none;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        #toolbar button:hover {
+            background-color: #ddd;
+        }
+
+        #editor {
+            padding: 20px;
+            min-height: 400px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div id="editor-container">
+        <div id="toolbar">
+            <input type="text" id="title-input" placeholder="输入标题" oninput="updateTitle()">
+            <button onclick="newDocument()">新建文档</button>
+            <button onclick="formatText('bold')"><b>加粗</b></button>
+            <button onclick="formatText('italic')"><i>斜体</i></button>
+            <button onclick="formatText('underline')"><u>下划线</u></button>
+            <button onclick="formatText('insertOrderedList')">有序列表</button>
+            <button onclick="formatText('insertUnorderedList')">无序列表</button>
+            <button onclick="addHyperlink()">添加超链接</button>
+            <button onclick="downloadDocument('txt')" id="download-txt">下载TXT</button>
+            <button onclick="downloadDocument('doc')">下载DOC</button>
+        </div>
+        <div id="editor" contenteditable="true"></div>
+    </div>
+    <script>
+        function formatText(command) {
+            document.execCommand(command, false, null);
+        }
+
+        function updateTitle() {
+            const titleInput = document.getElementById('title-input').value;
+            document.title = titleInput;
+        }
+
+        function newDocument() {
+            document.getElementById('title-input').value = '';
+            document.getElementById('editor').innerHTML = '';
+            document.title = '在线文档编辑器';
+            document.getElementById('download-txt').classList.remove('hidden');
+        }
+
+        function addHyperlink() {
+            const url = prompt("请输入链接地址:");
+            if (url) {
+                document.execCommand('createLink', false, url);
+                document.getElementById('download-txt').classList.add('hidden');
+            }
+        }
+
+        document.getElementById('editor').addEventListener('keydown', function(event) {
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                document.execCommand('insertText', false, '\t');
+            }
+        });
+
+        function downloadDocument(format) {
+            const title = document.getElementById('title-input').value || '未命名文档';
+            const content = document.getElementById('editor').innerHTML;
+
+            if (format === 'txt' && !document.getElementById('download-txt').classList.contains('hidden')) {
+                const textContent = document.getElementById('editor').innerText;
+                const blob = new Blob([title + '\n\n' + textContent], { type: 'text/plain' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = title + '.txt';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else if (format === 'doc') {
+                const htmlContent = `<!DOCTYPE html><html><head><title>${title}</title></head><body><h1>${title}</h1>${content}</body></html>`;
+                const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = title + '.doc';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    </script>
+</body>
+</html>
