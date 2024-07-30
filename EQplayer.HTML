@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eric播放器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+        }
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+        }
+        .input-group button {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-left: none;
+            border-radius: 0 5px 5px 0;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        .input-group button:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            color: red;
+            margin-bottom: 20px;
+        }
+        video, audio {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        li:hover {
+            background-color: #f9f9f9;
+        }
+        .clear-history {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .clear-history:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Eq·player</h1>
+        <div class="input-group">
+            <input type="text" id="media-url" placeholder="输入媒体链接">
+            <button onclick="playMedia()">播放媒体</button>
+        </div>
+        <div class="input-group">
+            <input type="file" id="local-file">
+            <button onclick="playLocalMedia()">播放本地文件</button>
+        </div>
+        <div class="message" id="message"></div>
+        <video id="video-player" controls style="display:none;"></video>
+        <audio id="audio-player" controls></audio>
+        <h2>播放历史</h2>
+        <ul id="history"></ul>
+        <button class="clear-history" onclick="clearHistory()">清空历史</button>
+    </div>
+    <script>
+        let playHistory = JSON.parse(localStorage.getItem('playHistory')) || [];
+        const audioPlayer = document.getElementById('audio-player');
+        const videoPlayer = document.getElementById('video-player');
+        const historyElement = document.getElementById('history');
+        const messageElement = document.getElementById('message');
+
+        document.addEventListener('DOMContentLoaded', updateHistory);
+
+        function playMedia() {
+            stopAllMedia();
+            const mediaUrl = document.getElementById('media-url').value;
+            if (isValidUrl(mediaUrl)) {
+                if (isVideoUrl(mediaUrl)) {
+                    videoPlayer.style.display = 'block';
+                    audioPlayer.style.display = 'none';
+                    videoPlayer.src = mediaUrl;
+                    videoPlayer.play();
+                } else {
+                    videoPlayer.style.display = 'block'; // 强制将链接当作视频处理
+                    audioPlayer.style.display = 'none';
+                    videoPlayer.src = mediaUrl;
+                    videoPlayer.play();
+                }
+                addToHistory(mediaUrl);
+                document.getElementById('media-url').value = '';
+                messageElement.textContent = '';
+            } else {
+                messageElement.textContent = '请输入有效的媒体链接';
+            }
+        }
+
+        function playLocalMedia() {
+            stopAllMedia();
+            const file = document.getElementById('local-file').files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                if (file.type.startsWith('video/')) {
+                    videoPlayer.style.display = 'block';
+                    audioPlayer.style.display = 'none';
+                    videoPlayer.src = url;
+                    videoPlayer.play();
+                } else if (file.type.startsWith('audio/')) {
+                    videoPlayer.style.display = 'none';
+                    audioPlayer.style.display = 'block';
+                    audioPlayer.src = url;
+                    audioPlayer.play();
+                }
+            }
+        }
+
+        function stopAllMedia() {
+            if (!audioPlayer.paused) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+            }
+            if (!videoPlayer.paused) {
+                videoPlayer.pause();
+                videoPlayer.currentTime = 0;
+            }
+        }
+
+        function addToHistory(url) {
+            if (!playHistory.includes(url)) {
+                playHistory.push(url);
+                updateHistory();
+                localStorage.setItem('playHistory', JSON.stringify(playHistory));
+            }
+        }
+
+        function updateHistory() {
+            historyElement.innerHTML = '';
+            playHistory.forEach(url => {
+                const listItem = document.createElement('li');
+                listItem.textContent = url;
+                listItem.addEventListener('click', () => {
+                    document.getElementById('media-url').value = url;
+                    playMedia();
+                });
+                historyElement.appendChild(listItem);
+            });
+        }
+
+        function clearHistory() {
+            playHistory = [];
+            localStorage.setItem('playHistory', JSON.stringify(playHistory));
+            updateHistory();
+        }
+
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        function isVideoUrl(url) {
+            return /\.(mp4|webm|ogg)$/i.test(url);
+        }
+    </script>
+</body>
+</html>
