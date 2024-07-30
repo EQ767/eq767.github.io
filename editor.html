@@ -60,21 +60,29 @@
             min-height: 400px;
             margin-top: 50px;
         }
+
+        #file-input {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div id="editor-container">
         <div id="toolbar">
             <input type="text" id="title-input" placeholder="输入标题" oninput="updateTitle()">
-            <button onclick="newDocument()">新建文档</button>
+            <button onclick="newDocument()">+New</button>
             <button onclick="formatText('bold')"><b>加粗</b></button>
             <button onclick="formatText('italic')"><i>斜体</i></button>
             <button onclick="formatText('underline')"><u>下划线</u></button>
             <button onclick="formatText('insertOrderedList')">有序列表</button>
             <button onclick="formatText('insertUnorderedList')">无序列表</button>
-            <button onclick="addHyperlink()">添加超链接</button>
-            <button onclick="downloadDocument('txt')" id="download-txt">下载TXT</button>
-            <button onclick="downloadDocument('doc')">下载DOC</button>
+            <button onclick="addHyperlink()">超链接</button>
+            <button onclick="document.getElementById('file-input').click()">上传</button>
+            <input type="file" id="file-input" accept=".txt,.doc,.docx" onchange="openFile(event)">
+            <button onclick="downloadDocument('txt')" id="download-txt">存为TXT</button>
+            <button onclick="downloadDocument('doc')">存为DOC</button>
+            <button onclick="undo()">←</button>
+            <button onclick="redo()">→</button>
         </div>
         <div id="editor" contenteditable="true"></div>
     </div>
@@ -103,12 +111,45 @@
             }
         }
 
+        function undo() {
+            document.execCommand('undo');
+        }
+
+        function redo() {
+            document.execCommand('redo');
+        }
+
         document.getElementById('editor').addEventListener('keydown', function(event) {
             if (event.key === 'Tab') {
                 event.preventDefault();
                 document.execCommand('insertText', false, '\t');
             }
         });
+
+        function openFile(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const contents = e.target.result;
+                const extension = file.name.split('.').pop().toLowerCase();
+
+                if (extension === 'txt') {
+                    document.getElementById('editor').innerText = contents;
+                } else if (extension === 'doc' || extension === 'docx') {
+                    // For simplicity, you may need a more complex parser for .doc/.docx files
+                    // This example assumes you handle it as plain text
+                    const temporaryElement = document.createElement('div');
+                    temporaryElement.innerHTML = contents;
+                    document.getElementById('editor').innerHTML = temporaryElement.innerText;
+                }
+
+                document.getElementById('title-input').value = file.name.replace(/\.[^/.]+$/, "");
+                document.title = file.name.replace(/\.[^/.]+$/, "");
+            };
+
+            reader.readAsText(file);
+        }
 
         function downloadDocument(format) {
             const title = document.getElementById('title-input').value || '未命名文档';
