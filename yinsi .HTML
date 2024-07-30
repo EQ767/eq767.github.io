@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>密码保护页面</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        #protected-content {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="login-form">
+        <h2>请输入密码</h2>
+        <input type="password" id="password-input">
+        <button onclick="checkPassword()">提交</button>
+    </div>
+    
+    <div id="protected-content">
+        <iframe id="protected-iframe" width="100%" height="600px"></iframe>
+    </div>
+    
+    <script>
+        let correctHash = '';
+
+        // 获取正确的哈希值
+        fetch('hjv/mm.txt')
+            .then(response => response.text())
+            .then(data => {
+                correctHash = data.trim();
+            });
+
+        function checkPassword() {
+            const password = document.getElementById('password-input').value;
+            const hash = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
+
+            if (hash === correctHash) {
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('protected-content').style.display = 'block';
+                
+                // 获取嵌入网页的URL并加载到iframe中
+                fetch('hjv/nr.txt')
+                    .then(response => response.text())
+                    .then(url => {
+                        document.getElementById('protected-iframe').src = url.trim();
+                    });
+            } else {
+                alert('密码错误，请重试。');
+            }
+        }
+    </script>
+</body>
+</html>
