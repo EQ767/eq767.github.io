@@ -92,6 +92,19 @@
             margin-left: 10px;
             font-size: 14px;
         }
+        .nav-button {
+            margin-top: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .nav-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -110,6 +123,9 @@
         <label for="copyToggle"></label>
         <span>是否复制预览链接</span>
     </div>
+    
+    <button class="nav-button" id="navigateButton">跳转至搜索页面</button>
+
     <script>
         document.getElementById('parseButton').addEventListener('click', function() {
             const shareLink = document.getElementById('shareLink').value;
@@ -147,6 +163,10 @@
             const match = shareLink.match(/(?:id=|\/)(\d+)/);
             return match ? match[1] : null;
         }
+
+        document.getElementById('navigateButton').addEventListener('click', function() {
+            window.location.href = 'search.html';
+        });
     </script>
 </body>
 </html>
