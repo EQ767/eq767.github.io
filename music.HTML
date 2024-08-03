@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eric's音链预览器</title>
     <style>
+        /* Basic styling for the page */
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
@@ -127,6 +128,7 @@
     <button class="nav-button" id="navigateButton">跳转至搜索页面</button>
 
     <script>
+        // Event listener for the "获取" button
         document.getElementById('parseButton').addEventListener('click', function() {
             const shareLink = document.getElementById('shareLink').value;
             const songId = extractSongId(shareLink);
@@ -139,12 +141,14 @@
                 player.src = downloadUrl;
                 player.style.display = 'block';
                 
+                // Temporary message display
                 const tempMessage = document.getElementById('temporaryMessage');
                 tempMessage.style.display = 'inline';
                 setTimeout(() => {
                     tempMessage.style.display = 'none';
-                }, 3000);  // 显示 3 秒钟
+                }, 3000);  // Display for 3 seconds
 
+                // Copy the download URL to clipboard if the toggle is checked
                 const copyToggle = document.getElementById('copyToggle').checked;
                 if (copyToggle) {
                     navigator.clipboard.writeText(downloadUrl).then(() => {
@@ -159,11 +163,13 @@
             }
         });
 
+        // Function to extract the song ID from the provided share link
         function extractSongId(shareLink) {
             const match = shareLink.match(/(?:id=|\/)(\d+)/);
             return match ? match[1] : null;
         }
 
+        // Event listener for the "跳转至搜索页面" button
         document.getElementById('navigateButton').addEventListener('click', function() {
             window.location.href = 'search.html';
         });
