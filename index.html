@@ -94,6 +94,34 @@
             margin-top: 20px;
             cursor: pointer;
         }
+        /* 弹窗样式 */
+        .info-popup {
+            position: fixed;
+            top: 20px;
+            right: -350px;
+            width: 300px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: right 0.5s ease;
+            z-index: 1000;
+        }
+        .info-popup.show {
+            right: 20px;
+        }
+        .info-popup.hide {
+            right: -350px;
+        }
+        .info-main {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .info-details {
+            font-size: 0.9em;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -121,6 +149,9 @@
         </a>
     </div>
 
+    <!-- 弹窗 -->
+    <div id="visitor-info" class="info-popup">加载中...</div>
+
     <script>
         function openNav() {
             document.getElementById("mySidenav").style.width = "250px";
@@ -129,8 +160,40 @@
 
         function closeNav() {
             document.getElementById("mySidenav").style.width = "0";
-            document.getElementById("main").style.marginLeft= "0";
+            document.getElementById("main").style.marginLeft = "0";
         }
+
+        // 获取访问者信息
+        Promise.all([
+            fetch('https://api.uomg.com/api/visitor.info?skey=774740085').then(response => response.json()),
+            fetch('https://www.mxnzp.com/api/ip/self?app_id=rgihdrm0kslojqvm&app_secret=WnhrK251TWlUUThqaVFWbG5OeGQwdz09').then(response => response.json())
+        ])
+        .then(([visitorData, ipData]) => {
+            const visitorInfo = document.getElementById('visitor-info');
+            if (visitorData.system && visitorData.browser && visitorData.time && ipData.data && ipData.data.province && ipData.data.city && ipData.data.isp) {
+                visitorInfo.innerHTML = `
+                    <div class="info-main">
+                        你好呀来自${ipData.data.province}${ipData.data.city}的${ipData.data.isp}${visitorData.system}用户
+                    </div>
+                    <div class="info-details">
+                        ${visitorData.browser} ${visitorData.time}
+                    </div>
+                `;
+                // 添加显示类以启动滑动动画
+                visitorInfo.classList.add('show');
+
+                // 设置5秒后自动隐藏
+                setTimeout(() => {
+                    visitorInfo.classList.add('hide');
+                }, 5000);
+            } else {
+                visitorInfo.innerHTML = '<p>获取访问者信息时出错</p>';
+            }
+        })
+        .catch(error => {
+            console.error('获取访问者信息时出错：', error);
+            document.getElementById('visitor-info').innerHTML = '<p>获取访问者信息时出错</p>';
+        });
     </script>
 </body>
 </html>
