@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天文图像</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .title {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        .explanation {
+            font-size: 16px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>天文图像</h1>
+        <div id="apod-content">
+            <p>加载中...</p>
+        </div>
+    </div>
+    <script>
+        async function fetchApod() {
+            const apiKey = 'TJTjotiNFKFh541VXfSwmsKdwMBVuRUikDmyPCgN';
+            const response = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}&count=1`);
+            const data = await response.json();
+            const apod = data[0];
+            
+            const content = document.getElementById('apod-content');
+            content.innerHTML = `
+                <h2 class="title">${apod.title}</h2>
+                <img src="${apod.url}" alt="${apod.title}">
+                <p class="explanation">${apod.explanation}</p>
+                <p><strong>版权：</strong>${apod.copyright}</p>
+            `;
+        }
+
+        fetchApod();
+    </script>
+</body>
+</html>
