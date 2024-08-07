@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聚合热榜</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 20px;
+            width: 90%;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .hotlist-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .hotlist-item h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            color: #1E90FF;
+        }
+        .hotlist-item p {
+            margin: 0;
+            color: #555;
+        }
+        .hotlist-item a {
+            text-decoration: none;
+            color: #1E90FF;
+            margin-top: 5px;
+            display: block;
+        }
+        .hotlist-item a:hover {
+            text-decoration: underline;
+        }
+        .source {
+            font-size: 0.9em;
+            color: #888;
+            margin-top: 10px;
+        }
+        #loading {
+            text-align: center;
+            color: #1E90FF;
+            margin-top: 20px;
+        }
+        #hotlist-select {
+            margin-bottom: 20px;
+            font-size: 16px;
+            padding: 5px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>聚合热榜</h1>
+        <select id="hotlist-select">
+            <option value="bili">B站</option>
+            <option value="wbHot">微博</option>
+            <option value="toutiao">今日头条</option>
+            <option value="zhihuHot">知乎</option>
+            <option value="36Ke">36氪</option>
+            <option value="baiduRD">百度</option>
+        </select>
+        <div id="hotlist-container"></div>
+        <div id="loading">正在加载...</div>
+    </div>
+
+    <script>
+        const apis = {
+            bili: {type: 'B站', url: 'https://api.vvhan.com/api/hotlist/bili'},
+            wbHot: {type: '微博', url: 'https://api.vvhan.com/api/hotlist/wbHot'},
+            toutiao: {type: '今日头条', url: 'https://api.vvhan.com/api/hotlist/toutiao'},
+            zhihuHot: {type: '知乎', url: 'https://api.vvhan.com/api/hotlist/zhihuHot'},
+            '36Ke': {type: '36氪', url: 'https://api.vvhan.com/api/hotlist/36Ke'},
+            baiduRD: {type: '百度', url: 'https://api.vvhan.com/api/hotlist/baiduRD'}
+        };
+
+        async function fetchHotList(api) {
+            const response = await fetch(api.url);
+            const data = await response.json();
+            return data.map(item => ({...item, type: api.type}));
+        }
+
+        function displayHotListItems(items) {
+            const container = document.getElementById('hotlist-container');
+            container.innerHTML = '';  // Clear previous items
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'hotlist-item';
+                div.innerHTML = `
+                    <h3>${item.title}</h3>
+                    <p>${item.hot}</p>
+                    <a href="${item.url}" target="_blank">查看详情</a>
+                    <p class="source">来源: ${item.type}</p>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        async function loadHotList(apiKey) {
+            const loadingDiv = document.getElementById('loading');
+            loadingDiv.style.display = 'block';
+            const items = await fetchHotList(apis[apiKey]);
+            displayHotListItems(items);
+            loadingDiv.style.display = 'none';
+        }
+
+        document.getElementById('hotlist-select').addEventListener('change', (event) => {
+            const apiKey = event.target.value;
+            loadHotList(apiKey);
+        });
+
+        // 初次加载B站热榜
+        loadHotList('bili');
+    </script>
+</body>
+</html>
