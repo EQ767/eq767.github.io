@@ -27,6 +27,7 @@
         .tabs {
             display: flex;
             justify-content: center;
+            flex-wrap: wrap;
             margin-bottom: 20px;
         }
         .tab {
@@ -47,6 +48,13 @@
         }
         .tab.active {
             background-color: #0056b3;
+        }
+        .tab-coffee {
+            background-color: #ffcc00; /* 金黄色 */
+            color: #333;
+        }
+        .tab-coffee:hover {
+            background-color: #e6b800; /* 深金黄色 */
         }
         .tab-content {
             display: none;
@@ -91,24 +99,60 @@
         .card a:hover {
             background-color: #0056b3;
         }
+        .donate {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .donate a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ffcc00; /* 金黄色 */
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .donate a:hover {
+            background-color: #e6b800; /* 深金黄色 */
+        }
+        @media (max-width: 768px) {
+            .tab {
+                flex: 1 1 100%;
+                margin-bottom: 10px;
+            }
+            .tab:not(:last-child) {
+                margin-right: 0;
+            }
+            h1 {
+                font-size: 2em;
+            }
+        }
+        @media (max-width: 480px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var tabs = document.querySelectorAll('.tab');
-            var tabContents = document.querySelectorAll('.tab-content');
+            const tabsContainer = document.querySelector('.tabs');
+            const tabContents = document.querySelectorAll('.tab-content');
 
-            tabs.forEach(function (tab, index) {
-                tab.addEventListener('click', function () {
-                    tabs.forEach(function (t) { t.classList.remove('active'); });
-                    tabContents.forEach(function (tc) { tc.classList.remove('active'); });
-                    tab.classList.add('active');
-                    tabContents[index].classList.add('active');
-                });
+            tabsContainer.addEventListener('click', function (event) {
+                if (!event.target.classList.contains('tab')) return;
+
+                const tab = event.target;
+                const tabIndex = Array.from(tabsContainer.children).indexOf(tab);
+
+                tabsContainer.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                tabContents.forEach(tc => tc.classList.remove('active'));
+                tabContents[tabIndex].classList.add('active');
             });
 
             // 默认激活第一个选项卡
-            tabs[0].classList.add('active');
-            tabContents[0].classList.add('active');
+            tabsContainer.querySelector('.tab').click();
         });
     </script>
 </head>
@@ -118,6 +162,7 @@
         <div class="tabs">
             <button class="tab">娱乐</button>
             <button class="tab">实用工具</button>
+            <button class="tab tab-coffee">请杯咖啡</button>
         </div>
         <div class="tab-content active">
             <div class="grid">
@@ -146,6 +191,11 @@
                     <p>哔哩哔哩热门视频排行</p>
                     <a href="https://eq767.github.io/Bilihot.html" target="_blank">进入</a>
                 </div>
+                <div class="card">
+                    <h2>必应壁纸下载</h2>
+                    <p>每日必应壁纸下载</p>
+                    <a href="https://eq767.github.io/Bing/" target="_blank">进入</a>
+                </div>
             </div>
         </div>
         <div class="tab-content">
@@ -170,6 +220,14 @@
                     <p>在线翻译工具</p>
                     <a href="https://eq767.github.io/Translator.html" target="_blank">进入</a>
                 </div>
+            </div>
+        </div>
+        <div class="tab-content">
+            <div class="donate">
+                <h2>请杯咖啡</h2>
+                <p>开发不易，如果你觉得这些工具对你有帮助，</p> 
+                <p>可以支持一下我，随便捐点，让我继续折腾更多有趣的工具给大家！</p> 
+                <a href="https://eq767.github.io/ds.html" target="_blank">捐赠</a>
             </div>
         </div>
     </div>
