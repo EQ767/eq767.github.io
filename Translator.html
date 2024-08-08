@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eric Translator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .translator-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 400px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            resize: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #resultContainer {
+            margin-top: 20px;
+        }
+
+        #targetText {
+            font-size: 1.2em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="translator-container">
+        <h1>Eric Translator</h1>
+        <textarea id="sourceText" placeholder="Enter text to translate..."></textarea>
+        <button onclick="translateText()">翻译</button>
+        <div id="resultContainer">
+            <h2>————————</h2>
+            <p id="targetText"></p>
+        </div>
+    </div>
+    <script>
+        async function translateText() {
+            const sourceText = document.getElementById('sourceText').value;
+            const url = `https://api.oioweb.cn/api/txt/QQFanyi?sourceText=${encodeURIComponent(sourceText)}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.code === 200) {
+                    document.getElementById('targetText').innerText = data.result.targetText;
+                } else {
+                    document.getElementById('targetText').innerText = "Translation failed. Please try again.";
+                }
+            } catch (error) {
+                document.getElementById('targetText').innerText = "Error occurred. Please try again.";
+            }
+        }
+    </script>
+</body>
+</html>
