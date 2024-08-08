@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="一个集合了各种在线工具和资源的页面，包括游戏、音乐、天文、猫图、B站热榜、视频解析、Eq·Player、在线电脑文本编辑和翻译器。">
+    <meta name="keywords" content="在线工具,实用, 游戏, 音乐, 天文, 猫图, B站热榜, 视频解析, Eq·Player, 在线文本编辑, 翻译器">
+    <title>Eric's工具集 | 在线资源和实用工具</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #333;
+            font-size: 2.5em;
+        }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            outline: none;
+            transition: background-color 0.3s;
+        }
+        .tab:not(:last-child) {
+            margin-right: 10px;
+        }
+        .tab:hover {
+            background-color: #0056b3;
+        }
+        .tab.active {
+            background-color: #0056b3;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .card h2 {
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+        .card p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        .card a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .card a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var tabs = document.querySelectorAll('.tab');
+            var tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(function (tab, index) {
+                tab.addEventListener('click', function () {
+                    tabs.forEach(function (t) { t.classList.remove('active'); });
+                    tabContents.forEach(function (tc) { tc.classList.remove('active'); });
+                    tab.classList.add('active');
+                    tabContents[index].classList.add('active');
+                });
+            });
+
+            // 默认激活第一个选项卡
+            tabs[0].classList.add('active');
+            tabContents[0].classList.add('active');
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Eric's工具集</h1>
+        <div class="tabs">
+            <button class="tab">娱乐</button>
+            <button class="tab">实用工具</button>
+        </div>
+        <div class="tab-content active">
+            <div class="grid">
+                <div class="card">
+                    <h2>游戏</h2>
+                    <p>各种有趣的在线游戏</p>
+                    <a href="https://eq767.github.io/all-game/" target="_blank">进入</a>
+                </div>
+                <div class="card">
+                    <h2>音乐</h2>
+                    <p>在线音乐播放和资源</p>
+                    <a href="https://eq767.github.io/music.HTML" target="_blank">进入</a>
+                </div>
+                <div class="card">
+                    <h2>天文</h2>
+                    <p>天文图片和信息</p>
+                    <a href="https://eq767.github.io/AstronomyPic.html" target="_blank">进入</a>
+                </div>
+                <div class="card">
+                    <h2>猫图</h2>
+                    <p>可爱的猫咪图片</p>
+                    <a href="https://eq767.github.io/Cat.html" target="_blank">进入</a>
+                </div>
+                <div class="card">
+                    <h2>B站热榜</h2>
+                    <p>哔哩哔哩热门视频排行</p>
+                    <a href="https://eq767.github.io/Bilihot.html" target="_blank">进入</a>
+                </div>
+            </div>
+        </div>
+        <div class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h2>视频解析</h2>
+                    <p>在线视频解析工具</p>
+                    <a href="https://eq767.github.io/VJ.html" target="_blank">进入</a>
+                </div>
+                <div class="card">
+                    <h2>Eq·Player</h2>
+                    <p>多功能播放器</p>
+                    <a href="https://eq767.github.io/EQplayer.HTML" target="_blank">进入</a>
+                </div>
+                <div class="card">
+                    <h2>在线电脑文本编辑</h2>
+                    <p>在线编辑和管理文本</p>
+                    <a href="https://eq767.github.io/editor.html" target="_blank">进入</a>
+                </div>
+                <div class="card">
+                    <h2>翻译器</h2>
+                    <p>在线翻译工具</p>
+                    <a href="https://eq767.github.io/Translator.html" target="_blank">进入</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
