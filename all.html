@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="一个集合了各种在线工具和资源的页面，包括游戏、音乐、天文、猫图、B站热榜、视频解析、Eq·Player、在线电脑文本编辑和翻译器。">
     <meta name="keywords" content="在线工具,实用, 游戏, 音乐, 天文, 猫图, B站热榜, 视频解析, Eq·Player, 在线文本编辑, 翻译器">
+    <link rel="icon" href="https://pic3.zhimg.com/v2-77569c657f821f099205db9d7784b8c2_r.jpg?source=1940ef5c" type="image/jpg">
     <title>Eric's工具集 | 在线资源和实用工具</title>
     <style>
         body {
@@ -43,18 +44,16 @@
         .tab:not(:last-child) {
             margin-right: 10px;
         }
-        .tab:hover {
-            background-color: #0056b3;
-        }
+        .tab:hover,
         .tab.active {
             background-color: #0056b3;
         }
         .tab-coffee {
-            background-color: #ffcc00; /* 金黄色 */
+            background-color: #ffcc00;
             color: #333;
         }
         .tab-coffee:hover {
-            background-color: #e6b800; /* 深金黄色 */
+            background-color: #e6b800;
         }
         .tab-content {
             display: none;
@@ -106,14 +105,14 @@
         .donate a {
             display: inline-block;
             padding: 10px 20px;
-            background-color: #ffcc00; /* 金黄色 */
+            background-color: #ffcc00;
             color: #333;
             text-decoration: none;
             border-radius: 4px;
             transition: background-color 0.3s;
         }
         .donate a:hover {
-            background-color: #e6b800; /* 深金黄色 */
+            background-color: #e6b800;
         }
         @media (max-width: 768px) {
             .tab {
@@ -151,7 +150,6 @@
                 tabContents[tabIndex].classList.add('active');
             });
 
-            // 默认激活第一个选项卡
             tabsContainer.querySelector('.tab').click();
         });
     </script>
@@ -210,7 +208,6 @@
                     <p>多功能播放器</p>
                     <a href="https://eq767.github.io/EQplayer.HTML" target="_blank">进入</a>
                 </div>
-                </div>
                 <div class="card">
                     <h2>EQ.Music.Player</h2>
                     <p>高颜值本地音乐播放器</p>
@@ -231,8 +228,8 @@
         <div class="tab-content">
             <div class="donate">
                 <h2>请杯咖啡</h2>
-                <p>开发不易，如果你觉得这些工具对你有帮助，</p> 
-                <p>可以支持一下我，随便捐点，让我继续折腾更多有趣的工具给大家！</p> 
+                <p>开发不易，如果你觉得这些工具对你有帮助，</p>
+                <p>可以支持一下我，随便捐点，让我继续折腾更多有趣的工具给大家！</p>
                 <a href="https://eq767.github.io/ds.html" target="_blank">捐赠</a>
             </div>
         </div>
