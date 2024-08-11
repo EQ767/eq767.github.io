@@ -46,6 +46,18 @@
                 width: 95%;
             }
         }
+
+        /* 用户协议链接样式 */
+        .agreement-link {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        /* 提示信息样式 */
+        .agreement-notice {
+            margin-top: 15px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -54,10 +66,14 @@
             <h1>欢迎访问</h1>
             <p>希望这里有你想要的，作者Eric</p>
             <p>将在 <span id="countdown">10</span> 秒后自动跳转到首页</p>
+            <p class="agreement-notice">
+                使用本站则代表您已阅读、理解并同意本站的
+                <a href="https://eq767.github.io/hjv/%E7%94%A8%E6%88%B7%E5%8D%8F%E8%AE%AE.txt" class="agreement-link" target="_blank">用户协议</a>。
+            </p>
         </div>
     </div>
     <script>
-        let countdown = 5; 
+        let countdown = 6; 
         const countdownElement = document.getElementById("countdown");
         countdownElement.textContent = countdown;
 
