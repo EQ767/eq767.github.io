@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>欢迎界面</title>
+    <style>
+        /* 重置样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 设置html和body的高度和宽度为100% */
+        html, body {
+            height: 100%;
+            width: 100%;
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* 禁止滚动 */
+        }
+
+        /* 全屏背景和中心内容 */
+        .fullscreen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            color: #fff;
+            text-align: center;
+        }
+
+        /* 响应式文本 */
+        .content {
+            width: 90%;
+            max-width: 800px;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .content {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="fullscreen">
+        <div class="content">
+            <h1>欢迎访问</h1>
+            <p>希望这里有你想要的，作者Eric</p>
+            <p>将在 <span id="countdown">10</span> 秒后自动跳转到首页</p>
+        </div>
+    </div>
+    <script>
+        // 设置动态初始倒计时 (可以从服务器或其他来源获取)
+        let countdown = 10; // 可以替换为动态获取的值
+
+        // 每秒更新倒计时
+        const countdownElement = document.getElementById("countdown");
+        countdownElement.textContent = countdown;
+
+        const interval = setInterval(function() {
+            countdown--;
+            countdownElement.textContent = countdown;
+            if (countdown <= 0) {
+                clearInterval(interval);
+                window.location.href = "https://eq767.github.io"; // 跳转到指定网址
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
