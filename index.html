@@ -57,10 +57,7 @@
         </div>
     </div>
     <script>
-
         let countdown = 5; 
-
-        // 每秒更新倒计时
         const countdownElement = document.getElementById("countdown");
         countdownElement.textContent = countdown;
 
@@ -69,7 +66,7 @@
             countdownElement.textContent = countdown;
             if (countdown <= 0) {
                 clearInterval(interval);
-                window.location.href = "https://eq767.github.io/home.html"; // 跳转到指定网址
+                window.location.href = "https://eq767.github.io/home.html"; 
             }
         }, 1000);
     </script>
