@@ -39,7 +39,7 @@
             border-radius: 10px;
             background: rgba(255, 255, 255, 0.1);
         }
-        
+
         /* 响应式设计 */
         @media (max-width: 768px) {
             .content {
@@ -51,6 +51,7 @@
         .agreement-link {
             color: #ffffff;
             text-decoration: underline;
+            cursor: pointer;
         }
 
         /* 提示信息样式 */
@@ -61,30 +62,39 @@
     </style>
 </head>
 <body>
-    <div class="fullscreen">
+    <div class="fullscreen" id="main-content">
         <div class="content">
             <h1>欢迎访问</h1>
             <p>希望这里有你想要的，作者Eric</p>
             <p>将在 <span id="countdown">10</span> 秒后自动跳转到首页</p>
             <p class="agreement-notice">
                 使用本站则代表您已阅读、理解并同意本站的
-                <a href="https://eq767.github.io/pxy.html" class="agreement-link" target="_blank">用户协议</a>。
+                <span class="agreement-link" onclick="loadAgreement()">用户协议</span>。
             </p>
         </div>
     </div>
-    <script>
-        let countdown = 6; 
-        const countdownElement = document.getElementById("countdown");
-        countdownElement.textContent = countdown;
 
-        const interval = setInterval(function() {
-            countdown--;
-            countdownElement.textContent = countdown;
-            if (countdown <= 0) {
-                clearInterval(interval);
-                window.location.href = "https://eq767.github.io/home.html"; 
-            }
-        }, 1000);
+    <script>
+        let countdown = 10; 
+        const countdownElement = document.getElementById("countdown");
+        let interval = startCountdown();
+
+        function startCountdown() {
+            return setInterval(function() {
+                countdown--;
+                countdownElement.textContent = countdown;
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    window.location.href = "https://eq767.github.io/home.html"; 
+                }
+            }, 1000);
+        }
+
+        function loadAgreement() {
+            clearInterval(interval); // 停止倒计时
+            window.location.href = "https://eq767.github.io/pxy.html"; // 跳转到用户协议页面
+        }
     </script>
 </body>
 </html>
+
