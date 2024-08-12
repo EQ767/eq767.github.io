@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户协议</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fad0c4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            max-height: 80%;
+            overflow-y: auto;
+            width: 80%;
+            color: #f7f7f7;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            color: #fff;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        pre {
+            margin-bottom: 20px;
+            font-size: 1rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .link {
+            display: inline-block;
+            font-size: 1rem;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: #ff6f61;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: background 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .link:hover {
+            background: #e94e3d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>用户协议</h1>
+        <pre id="agreement-content">加载中...</pre>
+        <a href="https://eq767.github.io/home.html" class="link">同意并继续</a>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('https://eq767.github.io/hjv/%E7%94%A8%E6%88%B7%E5%8D%8F%E8%AE%AE.txt')
+                .then(response => response.text())
+                .then(text => {
+                    document.getElementById('agreement-content').textContent = text;
+                })
+                .catch(error => {
+                    document.getElementById('agreement-content').textContent = '加载用户协议失败。';
+                });
+        });
+    </script>
+</body>
+</html>
