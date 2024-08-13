@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bilibili 视频解析下载</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1f1f1f, #575757);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            padding: 30px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 28px;
+            color: #ff9800;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        label {
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: block;
+            text-align: left;
+            color: #ccc;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            border: 1px solid #333;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus {
+            border-color: #ff9800;
+        }
+        button {
+            width: 100%;
+            background-color: #ff9800;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        button:hover {
+            background-color: #e68900;
+            transform: translateY(-2px);
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .result p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #ff9800;
+        }
+        .result img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .result a {
+            display: block;
+            margin-bottom: 10px;
+            color: #ff9800;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+        .result a:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bilibili 视频解析下载</h1>
+        <label for="videoUrl">请输入 Bilibili 视频链接：</label>
+        <input type="text" id="videoUrl" placeholder="https://www.bilibili.com/video/xxxxxx">
+        <button onclick="parseVideo()">解析视频</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        async function parseVideo() {
+            const videoUrl = document.getElementById('videoUrl').value;
+            if (!videoUrl) {
+                alert("请输入视频链接！");
+                return;
+            }
+
+            // 将视频链接转换为Base64
+            const base64Url = btoa(videoUrl);
+
+            const appId = "l00espipppketj0s";
+            const appSecret = "oVHoy1z8ngKuLWoVkZJI4ZktkJrvAh6G";
+            const apiUrl = `https://www.mxnzp.com/api/bilibili/video?url=${base64Url}&app_id=${appId}&app_secret=${appSecret}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.code === 1) {
+                    let resultHtml = `<p>视频标题: ${data.data.title}</p>`;
+                    resultHtml += `<p>视频描述: ${data.data.desc}</p>`;
+                    resultHtml += `<p><img src="${data.data.cover}" alt="视频封面"></p>`;
+                    resultHtml += `<p>下载链接:</p>`;
+                    data.data.list.forEach(item => {
+                        resultHtml += `<a href="${item.url}" target="_blank">下载 ${item.title} - ${item.durationFormat} - ${item.width}x${item.height}</a>`;
+                    });
+                    document.getElementById('result').innerHTML = resultHtml;
+                } else {
+                    document.getElementById('result').innerHTML = `<p>解析失败: ${data.msg}</p>`;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = `<p>请求出错: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
