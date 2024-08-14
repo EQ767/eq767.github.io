@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Protected Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #login-container, #chat-container {
+            width: 100%;
+            max-width: 500px;
+            background: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 20px;
+            text-align: center;
+        }
+        #chat-container {
+            display: none; /* Initially hide the chat container */
+        }
+        #chat-box {
+            height: 400px;
+            padding: 10px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .user-message {
+            background-color: #0084ff;
+            color: #fff;
+            text-align: right;
+        }
+        .bot-message {
+            background-color: #e5e5ea;
+            color: #000;
+            text-align: left;
+        }
+        #input-box {
+            display: flex;
+        }
+        #input-field {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+        #send-button {
+            padding: 10px;
+            background-color: #0084ff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="login-container">
+    <h2>Password Verification</h2>
+    <form id="passwordForm">
+        <label for="password">Your password:</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Submit</button>
+    </form>
+    <p id="message"></p>
+</div>
+
+<div id="chat-container">
+    <div id="chat-box"></div>
+    <div id="input-box">
+        <input type="text" id="input-field" placeholder="Type a message..." />
+        <button id="send-button">Send</button>
+    </div>
+</div>
+
+<script>
+    let providedHash = ""; // 空的哈希值，稍后从远程文件中获取
+
+    // 从远程文件获取哈希值
+    fetch('https://gh-proxy.com/https://raw.githubusercontent.com/EQ767/eq767.github.io/main/hjv/1.txt')
+        .then(response => response.text())
+        .then(hash => {
+            providedHash = hash.trim(); // 去掉可能的空白符
+        })
+        .catch(error => {
+            document.getElementById('message').textContent = "Error fetching the hash value.";
+            console.error('Error fetching hash:', error);
+        });
+
+    // SHA-256 哈希函数
+    async function sha256(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        return hashHex;
+    }
+
+    // 表单提交处理
+    document.getElementById('passwordForm').addEventListener('submit', async function(e) {
+        e.preventDefault(); // 阻止表单默认提交行为
+
+        const password = document.getElementById('password').value;
+
+        // 计算两次哈希值
+        const hashedPassword = await sha256(password);
+        const doubleHashedPassword = await sha256(hashedPassword);
+
+        // 验证哈希值
+        if (doubleHashedPassword === providedHash) {
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('chat-container').style.display = 'block';
+        } else {
+            document.getElementById('message').textContent = "Login failed!";
+        }
+    });
+
+    const API_URL = "https://api.chatanywhere.com.cn";
+    const API_KEY = "sk-HpYcwf1IlV9HhALR9nPx2y28o3icp7JtVoWTQjdm1WoZa9AU";
+
+    document.getElementById('send-button').addEventListener('click', () => {
+        const userInput = document.getElementById('input-field').value;
+        if (userInput.trim() === "") return;
+
+        addMessage(userInput, 'user-message');
+        document.getElementById('input-field').value = "";
+
+        fetch(`${API_URL}/v1/chat/completions`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${API_KEY}`
+            },
+            body: JSON.stringify({
+                model: "gpt-3.5-turbo",
+                messages: [{ role: "user", content: userInput }],
+                max_tokens: 150
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const botMessage = data.choices[0].message.content;
+            addMessage(botMessage, 'bot-message');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            addMessage("An error occurred. Please try again later.", 'bot-message');
+        });
+    });
+
+    function addMessage(text, className) {
+        const messageElement = document.createElement('div');
+        messageElement.className = `message ${className}`;
+        messageElement.textContent = text;
+        document.getElementById('chat-box').appendChild(messageElement);
+        document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+    }
+</script>
+
+</body>
+</html>
