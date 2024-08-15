@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spark Lite Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #chatbox {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ccc;
+            overflow-y: scroll;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        #user-input {
+            width: calc(100% - 80px);
+            padding: 10px;
+        }
+        #send-button {
+            width: 60px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="chatbox"></div>
+<input type="text" id="user-input" placeholder="Type your message here">
+<button id="send-button">Send</button>
+
+<script>
+    const appid = "4cc41b0d";
+    const api_secret = "NDBkN2M3YWVlNzU1ZmIxMTA2ZGZlMTA2";
+    const api_key = "d7113c2f4bb73c07e97fbae0297fc932";
+    const domain = "general";
+    const Spark_url = "wss://spark-api.xf-yun.com/v1.1/chat";
+
+    const chatbox = document.getElementById('chatbox');
+    const userInput = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+
+    function createSignature() {
+        const timestamp = new Date().toISOString();
+        const signature = btoa(api_key + ":" + timestamp + ":" + api_secret);
+        return signature;
+    }
+
+    function createWebSocket() {
+        const ws = new WebSocket(Spark_url);
+
+        ws.onopen = () => {
+            console.log('WebSocket connected');
+            sendMessage(ws, "Hello, I'm your chat assistant!");
+        };
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data && data.content) {
+                appendMessage("Bot", data.content);
+            }
+        };
+
+        ws.onclose = () => {
+            console.log('WebSocket disconnected');
+        };
+
+        ws.onerror = (error) => {
+            console.error('WebSocket error', error);
+        };
+
+        return ws;
+    }
+
+    function sendMessage(ws, message) {
+        const payload = {
+            appid: appid,
+            api_key: api_key,
+            domain: domain,
+            content: message,
+            timestamp: new Date().toISOString(),
+            signature: createSignature()
+        };
+
+        ws.send(JSON.stringify(payload));
+        appendMessage("User", message);
+    }
+
+    function appendMessage(sender, message) {
+        const messageElement = document.createElement('p');
+        messageElement.textContent = `${sender}: ${message}`;
+        chatbox.appendChild(messageElement);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    const ws = createWebSocket();
+
+    sendButton.addEventListener('click', () => {
+        const message = userInput.value;
+        if (message) {
+            sendMessage(ws, message);
+            userInput.value = '';
+        }
+    });
+
+    userInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            sendButton.click();
+        }
+    });
+</script>
+
+</body>
+</html>
