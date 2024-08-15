@@ -92,20 +92,25 @@
 </div>
 
 <script>
-    let providedHash = ""; // 空的哈希值，稍后从远程文件中获取
+    let providedHash = "";
 
-    // 从远程文件获取哈希值
+    // Fetch hash value from remote file (1.txt)
     fetch('https://gh-proxy.com/https://raw.githubusercontent.com/EQ767/eq767.github.io/main/hjv/1.txt')
-        .then(response => response.text())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
         .then(hash => {
-            providedHash = hash.trim(); // 去掉可能的空白符
+            providedHash = hash.trim();
         })
         .catch(error => {
             document.getElementById('message').textContent = "Error fetching the hash value.";
             console.error('Error fetching hash:', error);
         });
 
-    // SHA-256 哈希函数
+    // SHA-256 hash function
     async function sha256(message) {
         const msgBuffer = new TextEncoder().encode(message);
         const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -114,57 +119,82 @@
         return hashHex;
     }
 
-    // 表单提交处理
+    // Handle form submission
     document.getElementById('passwordForm').addEventListener('submit', async function(e) {
-        e.preventDefault(); // 阻止表单默认提交行为
+        e.preventDefault();
 
         const password = document.getElementById('password').value;
-
-        // 计算两次哈希值
         const hashedPassword = await sha256(password);
         const doubleHashedPassword = await sha256(hashedPassword);
 
-        // 验证哈希值
         if (doubleHashedPassword === providedHash) {
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('chat-container').style.display = 'block';
+
+            // Fetch API key from y.txt in hjv folder
+            fetch('https://gh-proxy.com/https://raw.githubusercontent.com/EQ767/eq767.github.io/main/hjv/y.txt')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(apiKey => {
+                    initializeChatbot(apiKey.trim());
+                })
+                .catch(error => {
+                    console.error('Error fetching API key:', error);
+                    addMessage("An error occurred. Please try again later.", 'bot-message');
+                });
+
         } else {
             document.getElementById('message').textContent = "Login failed!";
         }
     });
 
-    const API_URL = "https://api.chatanywhere.com.cn";
-    const API_KEY = "sk-HpYcwf1IlV9HhALR9nPx2y28o3icp7JtVoWTQjdm1WoZa9AU";
+    function initializeChatbot(apiKey) {
+        const sendMessage = () => {
+            const userInput = document.getElementById('input-field').value;
+            if (userInput.trim() === "") return;
 
-    document.getElementById('send-button').addEventListener('click', () => {
-        const userInput = document.getElementById('input-field').value;
-        if (userInput.trim() === "") return;
+            addMessage(userInput, 'user-message');
+            document.getElementById('input-field').value = "";
 
-        addMessage(userInput, 'user-message');
-        document.getElementById('input-field').value = "";
-
-        fetch(`${API_URL}/v1/chat/completions`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${API_KEY}`
-            },
-            body: JSON.stringify({
-                model: "gpt-3.5-turbo",
-                messages: [{ role: "user", content: userInput }],
-                max_tokens: 150
+            fetch("https://api.chatanywhere.com.cn/v1/chat/completions", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: "gpt-3.5-turbo",
+                    messages: [{ role: "user", content: userInput }],
+                    max_tokens: 150
+                })
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            const botMessage = data.choices[0].message.content;
-            addMessage(botMessage, 'bot-message');
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            addMessage("An error occurred. Please try again later.", 'bot-message');
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch the chatbot response');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const botMessage = data.choices[0].message.content;
+                addMessage(botMessage, 'bot-message');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                addMessage("An error occurred. Please try again later.", 'bot-message');
+            });
+        };
+
+        document.getElementById('send-button').addEventListener('click', sendMessage);
+        document.getElementById('input-field').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
         });
-    });
+    }
 
     function addMessage(text, className) {
         const messageElement = document.createElement('div');
