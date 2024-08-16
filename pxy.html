@@ -72,11 +72,11 @@
     <div class="container">
         <h1>用户协议</h1>
         <pre id="agreement-content">加载中...</pre>
-        <a href="https://eq767.github.io/home.html" class="link">同意并继续</a>
+        <a href="https://eq767.github.io/" class="link">同意并继续</a>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('https://eq767.github.io/hjv/%E7%94%A8%E6%88%B7%E5%8D%8F%E8%AE%AE.txt')
+            fetch('https://mirror.ghproxy.com/https://raw.githubusercontent.com/EQ767/eq767.github.io/main/hjv/%E7%94%A8%E6%88%B7%E5%8D%8F%E8%AE%AE.txt')
                 .then(response => response.text())
                 .then(text => {
                     document.getElementById('agreement-content').textContent = text;
