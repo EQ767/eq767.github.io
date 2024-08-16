@@ -1,100 +1,276 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eric的小站</title>
+    <title>Eric小站</title>
+    <link rel="icon" href="https://pic3.zhimg.com/v2-77569c657f821f099205db9d7784b8c2_r.jpg?source=1940ef5c" type="image/jpeg">
     <style>
-        /* 重置样式 */
-        * {
+        body {
             margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
         }
 
-        /* 设置html和body的高度和宽度为100% */
-        html, body {
-            height: 100%;
+        /* 设置视频背景 */
+        .background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            font-family: Arial, sans-serif;
-            overflow: hidden; /* 禁止滚动 */
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
         }
 
-        /* 全屏背景和中心内容 */
-        .fullscreen {
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 2;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            overflow-x: hidden;
+            transition: width 0.5s ease;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            padding: 10px 8px 10px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #cfcfcf;
+            display: block;
+            transition: color 0.3s;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        #main {
+            transition: margin-left 0.5s ease;
+            padding: 16px;
+            text-align: center;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100%;
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            height: 100vh;
+            background-color: transparent;
+            overflow: auto;
+        }
+
+        .openbtn {
+            font-size: 30px;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            left: 20px;
             color: #fff;
-            text-align: center;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            transition: color 0.3s;
         }
 
-        /* 响应式文本 */
-        .content {
-            width: 90%;
-            max-width: 800px;
+        .openbtn:hover {
+            color: #666;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 20px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90%;
+            width: 400px;
         }
 
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .content {
-                width: 95%;
+        img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border: 2px solid #333;
+        }
+
+        h1 {
+            margin: 20px 0 10px;
+            font-size: 26px;
+            color: #333;
+        }
+
+        .footer {
+            margin-top: 20px;
+        }
+
+        .footer a {
+            text-decoration: none;
+            color: #007bff;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: #0056b3;
+        }
+
+        .bilibili-link img {
+            width: 50px;
+            height: 50px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .bilibili-link img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .info-popup {
+            position: fixed;
+            top: 20px;
+            right: -350px;
+            width: 300px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+            transition: right 0.5s ease;
+            z-index: 1000;
+            color: #333;
+        }
+
+        .info-popup.show {
+            right: 20px;
+        }
+
+        .info-popup.hide {
+            right: -350px;
+        }
+
+        /* 隐藏滚动条 */
+        ::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        /* 媒体查询以适配不同设备 */
+        @media (max-width: 767px) {
+            body {
+                background-position: top;
+                background-size: auto 100%;
             }
         }
 
-        /* 用户协议链接样式 */
-        .agreement-link {
-            color: #ffffff;
-            text-decoration: underline;
-            cursor: pointer;
+        @media (min-width: 768px) and (max-width: 1024px) {
+            body {
+                background-position: center;
+                background-size: cover;
+            }
         }
 
-        /* 提示信息样式 */
-        .agreement-notice {
-            margin-top: 15px;
-            font-size: 14px;
+        @media (min-width: 1025px) {
+            body {
+                background-position: center;
+                background-size: cover;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="fullscreen" id="main-content">
-        <div class="content">
-            <h1>欢迎访问</h1>
-            <p>希望这里有你想要的，作者Eric</p>
-            <p>将在 <span id="countdown">10</span> 秒后自动跳转到首页</p>
-            <p class="agreement-notice">
-                使用本站则代表您已阅读、理解并同意本站的
-                <span class="agreement-link" onclick="loadAgreement()">用户协议</span>。
-            </p>
-        </div>
+    <!-- 添加视频背景 -->
+    <video id="bgVideo" autoplay muted loop class="background-video">
+        <source src="https://files.codelife.cc/itab/defaultWallpaper/videos/20.mp4" type="video/mp4">
+        您的浏览器不支持HTML5视频标签。
+    </video>
+
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="https://eq767.github.io/all.html">总.本站功能集合</a>
+        <a href="https://eq767.github.io/Bing/">Bing壁纸下载</a>
+        <a href="https://eq767.github.io/ds.html">打赏一下吧...</a>
     </div>
 
+    <div id="main">
+        <button class="openbtn" onclick="openNav()">&#9776; 功能</button>
+        <div class="container">
+            <img src="https://pic3.zhimg.com/v2-77569c657f821f099205db9d7784b8c2_r.jpg?source=1940ef5c" alt="头像">
+            <h1>这个人很简单--Eric Q</h1>
+            <div class="footer">
+                <a href="https://eqshare521.wordpress.com/">友链</a>
+            </div>
+        </div>
+        <a class="bilibili-link" href="https://b23.tv/ETLPah4" target="_blank">
+            <img src="https://eqshare521.wordpress.com/wp-content/uploads/2024/07/wp-17220521064911518734673968984851.png" alt="B站">
+        </a>
+    </div>
+
+    <div id="visitor-info" class="info-popup">加载中...</div>
+
     <script>
-        let countdown = 10; 
-        const countdownElement = document.getElementById("countdown");
-        let interval = startCountdown();
-
-        function startCountdown() {
-            return setInterval(function() {
-                countdown--;
-                countdownElement.textContent = countdown;
-                if (countdown <= 0) {
-                    clearInterval(interval);
-                    window.location.href = "https://eq767.github.io/home.html"; 
-                }
-            }, 1000);
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+            document.getElementById("main").style.marginLeft = "250px";
         }
 
-        function loadAgreement() {
-            clearInterval(interval); // 停止倒计时
-            window.location.href = "https://eq767.github.io/pxy.html"; // 跳转到用户协议页面
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+            document.getElementById("main").style.marginLeft = "0";
         }
+
+        // 自动恢复视频播放
+        document.addEventListener("visibilitychange", function() {
+            const video = document.getElementById("bgVideo");
+            if (document.visibilityState === "visible" && video.paused) {
+                video.play();
+            }
+        });
+
+        Promise.all([
+            fetch('https://api.uomg.com/api/visitor.info?skey=774740085').then(response => response.json()),
+            fetch('https://www.mxnzp.com/api/ip/self?app_id=rgihdrm0kslojqvm&app_secret=WnhrK251TWlUUThqaVFWbG5OeGQwdz09').then(response => response.json())
+        ])
+        .then(([visitorData, ipData]) => {
+            const visitorInfo = document.getElementById('visitor-info');
+            if (visitorData.system && visitorData.browser && visitorData.time && ipData.data && ipData.data.province && ipData.data.city && ipData.data.isp) {
+                visitorInfo.innerHTML = `
+                    <div class="info-main">
+                        你好呀来自${ipData.data.province}${ipData.data.city}的${ipData.data.isp}${visitorData.system}用户
+                    </div>
+                    <div class="info-details">
+                        ${visitorData.browser} ${visitorData.time}
+                    </div>
+                `;
+                visitorInfo.classList.add('show');
+                setTimeout(() => {
+                    visitorInfo.classList.remove('show');
+                    visitorInfo.classList.add('hide');
+                }, 5000); // 显示5秒后自动隐藏
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching visitor info:', error);
+        });
+
     </script>
 </body>
 </html>
-
