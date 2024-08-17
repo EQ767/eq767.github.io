@@ -218,14 +218,12 @@
                 video.play();
             }
         });
-        Promise.all([
-            fetch('https://api.uomg.com/api/visitor.info?skey=774740085').then(response => response.json()),
-            fetch('https://www.mxnzp.com/api/ip/self?app_id=rgihdrm0kslojqvm&app_secret=WnhrK251TWlUUThqaVFWbG5OeGQwdz09').then(response => response.json())
-        ])
-        .then(([visitorData, ipData]) => {
+        fetch('https://api.uomg.com/api/visitor.info?skey=774740085')
+        .then(response => response.json())
+        .then(visitorData => {
             const visitorInfo = document.getElementById('visitor-info');
-            if (visitorData.system && visitorData.browser && visitorData.time && ipData.data.province) {
-                visitorInfo.innerHTML = `你好，来自 ${ipData.data.province} 的 ${visitorData.system} 用户。<br>使用 ${visitorData.browser} 浏览器，访问时间：${visitorData.time}。`;
+            if (visitorData.ip && visitorData.system && visitorData.browser && visitorData.time) {
+                visitorInfo.innerHTML = `你好，您的IP为 ${visitorData.ip}<br>使用${visitorData.browser}访问<br>访问时间：${visitorData.time}`;
             } else {
                 visitorInfo.innerHTML = '无法获取访问信息。';
             }
@@ -253,4 +251,3 @@
     </script>
 </body>
 </html>
-
