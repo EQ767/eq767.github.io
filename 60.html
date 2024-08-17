@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eric60″懂世界</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        .news {
+            padding: 20px;
+        }
+
+        .news h2 {
+            margin-top: 0;
+        }
+
+        .news-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .news-list li {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #e0f7fa;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .news-list li:hover {
+            background: #b2ebf2;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px 0;
+            background: #fafafa;
+        }
+
+        .share-button {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .share-button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>每日60秒读懂世界</h1>
+        </header>
+        <div class="news">
+            <!-- 隐藏图像部分 -->
+            <!-- <img id="main-image" src="" alt="今日图片"> -->
+            <h2>日期：<span id="news-date"></span></h2>
+            <p><strong></strong><span id="weiyu"></span></p>
+            <!-- 添加分享按钮 -->
+            <a id="share-button" class="share-button" href="#" target="_blank">查看图片</a>
+            <h2>今日新闻</h2>
+            <ul class="news-list" id="news-list"></ul>
+        </div>
+        <footer>
+            © 2024 每日60秒读懂世界
+        </footer>
+    </div>
+
+    <script>
+        fetch('https://api.oioweb.cn/api/common/today')
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    const result = data.result;
+
+                    // 隐藏主图像部分
+                    // document.getElementById('main-image').src = result.image;
+                    
+                    // 更新分享按钮链接
+                    document.getElementById('share-button').href = result.image;
+                    document.getElementById('news-date').innerText = result.date;
+                    document.getElementById('weiyu').innerText = result.weiyu;
+
+                    const newsList = document.getElementById('news-list');
+                    result.news.forEach(item => {
+                        const li = document.createElement('li');
+                        li.innerText = item;
+                        newsList.appendChild(li);
+                    });
+                } else {
+                    console.error('获取数据失败:', data.msg);
+                }
+            })
+            .catch(error => console.error('请求错误:', error));
+    </script>
+
+</body>
+
+</html>

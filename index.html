@@ -13,9 +13,8 @@
             overflow: hidden;
             height: 100vh;
             position: relative;
+            background-color: #f4f4f4;
         }
-
-        /* 设置视频背景 */
         .background-video {
             position: absolute;
             top: 0;
@@ -25,7 +24,6 @@
             object-fit: cover;
             z-index: -1;
         }
-
         .sidenav {
             height: 100%;
             width: 0;
@@ -35,10 +33,9 @@
             left: 0;
             background-color: rgba(0, 0, 0, 0.8);
             overflow-x: hidden;
-            transition: width 0.5s ease;
+            transition: width 0.5s ease, background-color 0.3s ease;
             padding-top: 60px;
         }
-
         .sidenav a {
             padding: 10px 8px 10px 32px;
             text-decoration: none;
@@ -47,11 +44,9 @@
             display: block;
             transition: color 0.3s;
         }
-
         .sidenav a:hover {
             color: #f1f1f1;
         }
-
         .sidenav .closebtn {
             position: absolute;
             top: 0;
@@ -59,7 +54,6 @@
             font-size: 36px;
             margin-left: 50px;
         }
-
         #main {
             transition: margin-left 0.5s ease;
             padding: 16px;
@@ -72,7 +66,6 @@
             background-color: transparent;
             overflow: auto;
         }
-
         .openbtn {
             font-size: 30px;
             cursor: pointer;
@@ -85,11 +78,9 @@
             outline: none;
             transition: color 0.3s;
         }
-
         .openbtn:hover {
             color: #666;
         }
-
         .container {
             background-color: rgba(255, 255, 255, 0.9);
             padding: 20px;
@@ -102,7 +93,6 @@
             max-width: 90%;
             width: 400px;
         }
-
         img {
             border-radius: 50%;
             width: 150px;
@@ -110,28 +100,23 @@
             object-fit: cover;
             border: 2px solid #333;
         }
-
         h1 {
             margin: 20px 0 10px;
             font-size: 26px;
             color: #333;
         }
-
         .footer {
             margin-top: 20px;
         }
-
         .footer a {
             text-decoration: none;
             color: #007bff;
             font-size: 18px;
             transition: color 0.3s;
         }
-
         .footer a:hover {
             color: #0056b3;
         }
-
         .bilibili-link img {
             width: 50px;
             height: 50px;
@@ -139,12 +124,10 @@
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
         }
-
         .bilibili-link img:hover {
             transform: scale(1.1);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
-
         .info-popup {
             position: fixed;
             top: 20px;
@@ -158,36 +141,28 @@
             z-index: 1000;
             color: #333;
         }
-
         .info-popup.show {
             right: 20px;
         }
-
         .info-popup.hide {
             right: -350px;
         }
-
-        /* 隐藏滚动条 */
         ::-webkit-scrollbar {
             width: 0;
             height: 0;
         }
-
-        /* 媒体查询以适配不同设备 */
         @media (max-width: 767px) {
             body {
                 background-position: top;
                 background-size: auto 100%;
             }
         }
-
         @media (min-width: 768px) and (max-width: 1024px) {
             body {
                 background-position: center;
                 background-size: cover;
             }
         }
-
         @media (min-width: 1025px) {
             body {
                 background-position: center;
@@ -197,84 +172,85 @@
     </style>
 </head>
 <body>
-    <!-- 添加视频背景 -->
     <video id="bgVideo" autoplay muted loop class="background-video">
         <source src="https://files.codelife.cc/itab/defaultWallpaper/videos/20.mp4" type="video/mp4">
         您的浏览器不支持HTML5视频标签。
     </video>
-
     <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         <a href="https://eq767.github.io/all.html">总.本站功能集合</a>
         <a href="https://eq767.github.io/Bing/">Bing壁纸下载</a>
         <a href="https://eq767.github.io/ds.html">打赏一下吧...</a>
-        <a href="https://eq767.github.io/pxy.html">用户协议</a> <!-- 添加用户协议链接 -->
+        <a href="https://eq767.github.io/pxy.html">用户协议</a>
     </div>
-
     <div id="main">
         <button class="openbtn" onclick="openNav()">&#9776; 功能</button>
         <div class="container">
             <img src="https://pic3.zhimg.com/v2-77569c657f821f099205db9d7784b8c2_r.jpg?source=1940ef5c" alt="头像">
-            <h1>这个人很简单--Eric Q</h1>
+            <div class="yiyan">
+                <p id="yiyan-content" style="font-size: 18px; color: #555; margin-bottom: 5px;"></p>
+                <p id="yiyan-author" style="font-size: 16px; color: #777;"></p>
+            </div>
             <div class="footer">
                 <a href="https://eqshare521.wordpress.com/">友链</a>
             </div>
             <div class="footer">
-                <a href="https://eq767.github.io/pxy.html">用户协议</a> <!-- 添加用户协议链接 -->
+                <a href="https://eq767.github.io/pxy.html">用户协议</a>
             </div>
         </div>
         <a class="bilibili-link" href="https://b23.tv/ETLPah4" target="_blank">
             <img src="https://eqshare521.wordpress.com/wp-content/uploads/2024/07/wp-17220521064911518734673968984851.png" alt="B站">
         </a>
     </div>
-
     <div id="visitor-info" class="info-popup">加载中...</div>
-
     <script>
         function openNav() {
             document.getElementById("mySidenav").style.width = "250px";
             document.getElementById("main").style.marginLeft = "250px";
         }
-
         function closeNav() {
             document.getElementById("mySidenav").style.width = "0";
             document.getElementById("main").style.marginLeft = "0";
         }
-
-        // 自动恢复视频播放
         document.addEventListener("visibilitychange", function() {
             const video = document.getElementById("bgVideo");
             if (document.visibilityState === "visible" && video.paused) {
                 video.play();
             }
         });
-
         Promise.all([
             fetch('https://api.uomg.com/api/visitor.info?skey=774740085').then(response => response.json()),
             fetch('https://www.mxnzp.com/api/ip/self?app_id=rgihdrm0kslojqvm&app_secret=WnhrK251TWlUUThqaVFWbG5OeGQwdz09').then(response => response.json())
         ])
         .then(([visitorData, ipData]) => {
             const visitorInfo = document.getElementById('visitor-info');
-            if (visitorData.system && visitorData.browser && visitorData.time && ipData.data && ipData.data.province && ipData.data.city && ipData.data.isp) {
-                visitorInfo.innerHTML = `
-                    <div class="info-main">
-                        你好呀来自${ipData.data.province}${ipData.data.city}的${ipData.data.isp}${visitorData.system}用户
-                    </div>
-                    <div class="info-details">
-                        ${visitorData.browser} ${visitorData.time}
-                    </div>
-                `;
-                visitorInfo.classList.add('show');
-                setTimeout(() => {
-                    visitorInfo.classList.remove('show');
-                    visitorInfo.classList.add('hide');
-                }, 5000); // 显示5秒后自动隐藏
+            if (visitorData.system && visitorData.browser && visitorData.time && ipData.data.province) {
+                visitorInfo.innerHTML = `你好，来自 ${ipData.data.province} 的 ${visitorData.system} 用户。<br>使用 ${visitorData.browser} 浏览器，访问时间：${visitorData.time}。`;
+            } else {
+                visitorInfo.innerHTML = '无法获取访问信息。';
             }
+            visitorInfo.classList.add('show');
+            setTimeout(() => {
+                visitorInfo.classList.remove('show');
+            }, 5000);
         })
         .catch(error => {
             console.error('Error fetching visitor info:', error);
+            const visitorInfo = document.getElementById('visitor-info');
+            visitorInfo.innerHTML = '获取访问信息时出错。';
+            visitorInfo.classList.add('show');
+            setTimeout(() => {
+                visitorInfo.classList.remove('show');
+            }, 5000);
         });
-
+        fetch('https://v1.hitokoto.cn')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('yiyan-content').innerText = data.hitokoto;
+            document.getElementById('yiyan-author').innerText = `——${data.from}`;
+        })
+        .catch(error => console.error('Error fetching hitokoto:', error));
     </script>
 </body>
 </html>
+
