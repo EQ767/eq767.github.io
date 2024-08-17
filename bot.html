@@ -38,6 +38,7 @@
             margin: 10px 0;
             padding: 10px;
             border-radius: 10px;
+            position: relative;
         }
         .user-message {
             background-color: #0084ff;
@@ -48,6 +49,19 @@
             background-color: #e5e5ea;
             color: #000;
             text-align: left;
+        }
+        .message-options {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .copy-button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
         }
         #input-box {
             display: flex;
@@ -199,9 +213,29 @@
     function addMessage(text, className) {
         const messageElement = document.createElement('div');
         messageElement.className = `message ${className}`;
-        messageElement.textContent = text;
+        const messageText = document.createElement('span');
+        messageText.textContent = text;
+        messageElement.appendChild(messageText);
+
+        const optionsContainer = document.createElement('div');
+        optionsContainer.className = 'message-options';
+        const copyButton = document.createElement('button');
+        copyButton.textContent = 'Copy';
+        copyButton.className = 'copy-button';
+        copyButton.onclick = () => copyToClipboard(text);
+        optionsContainer.appendChild(copyButton);
+
+        messageElement.appendChild(optionsContainer);
         document.getElementById('chat-box').appendChild(messageElement);
         document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+    }
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Text copied to clipboard');
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
     }
 </script>
 
