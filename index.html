@@ -203,6 +203,7 @@
         </a>
     </div>
     <div id="visitor-info" class="info-popup">加载中...</div>
+    <div id="visit-counter" class="info-popup">加载中...</div>
     <script>
         function openNav() {
             document.getElementById("mySidenav").style.width = "250px";
@@ -230,7 +231,7 @@
             visitorInfo.classList.add('show');
             setTimeout(() => {
                 visitorInfo.classList.remove('show');
-            }, 5000);
+            }, 3500);
         })
         .catch(error => {
             console.error('Error fetching visitor info:', error);
@@ -239,7 +240,7 @@
             visitorInfo.classList.add('show');
             setTimeout(() => {
                 visitorInfo.classList.remove('show');
-            }, 5000);
+            }, 1000);
         });
         fetch('https://v1.hitokoto.cn')
         .then(response => response.json())
@@ -248,6 +249,27 @@
             document.getElementById('yiyan-author').innerText = `——${data.from}`;
         })
         .catch(error => console.error('Error fetching hitokoto:', error));
+
+        // 访问量统计
+        fetch('https://finicounter.eu.org/counter?host=eq767.github.io')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('visit-counter').innerText = `访问量：${data.views}`;
+            const visitCounter = document.getElementById('visit-counter');
+            visitCounter.classList.add('show');
+            setTimeout(() => {
+                visitCounter.classList.remove('show');
+            }, 2000);
+        })
+        .catch(error => {
+            console.error('Error fetching visit count:', error);
+            document.getElementById('visit-counter').innerText = '无法获取访问量';
+            const visitCounter = document.getElementById('visit-counter');
+            visitCounter.classList.add('show');
+            setTimeout(() => {
+                visitCounter.classList.remove('show');
+            }, 1000);
+        });
     </script>
 </body>
 </html>

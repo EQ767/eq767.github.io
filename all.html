@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -168,7 +168,6 @@
 
             tabsContainer.querySelector('.tab').click();
 
-            // 检测页面可见性并控制视频播放
             document.addEventListener('visibilitychange', function() {
                 if (document.visibilityState === 'visible') {
                     video.play();
@@ -176,6 +175,19 @@
                     video.pause();
                 }
             });
+
+            // 发送访问量统计请求并显示在页面上
+            fetch('https://finicounter.eu.org/counter?host=eq767.github.io')
+                .then(response => response.json())
+                .then(data => {
+                    const viewCountElement = document.getElementById('view-count');
+                    viewCountElement.textContent = `页面访问量: ${data.views}`;
+                })
+                .catch(error => {
+                    console.error('访问量统计失败:', error);
+                    const viewCountElement = document.getElementById('view-count');
+                    viewCountElement.textContent = '访问量加载失败';
+                });
         });
     </script>
 </head>
@@ -263,16 +275,19 @@
                 <h2>媒体播放器</h2>
                 <p>方便在线多功能媒体播放</p>
                 <a href="https://eq767.github.io/EQplayer.html" target="_blank">进入</a>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<div class="tab-content">
+
+        <div class="tab-content">
             <div class="donate">
-                <p>如果您觉得这个工具集对您有帮助，可以请我喝杯咖啡~</p>
-                <a href="https://www.eq767.github.io/ds.html" target="_blank">请杯咖啡</a>
+                <h2>喜欢我的工具吗？</h2>
+                <p>请支持我，请我喝杯咖啡吧！</p>
+                <a href="https://www.buymeacoffee.com/yourprofile" target="_blank">请杯咖啡</a>
             </div>
         </div>
+
+        <div id="view-count">加载中...</div>
     </div>
 </body>
 </html>
