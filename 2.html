@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B站视频解析器</title>
     <style>
-        /* 样式同前 */
         body {
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #f9f9f9, #e0e0e0);
@@ -105,7 +104,7 @@
         </div>
         <div id="result-section" class="hidden">
             <h2 id="video-title"></h2>
-            <img id="video-cover" alt="视频封面" src="">
+            <img id="video-cover" alt="视频封面">
             <div class="video-stats">
                 <p>播放量: <span id="stat-view"></span></p>
                 <p>弹幕量: <span id="stat-danmu"></span></p>
@@ -137,18 +136,18 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.code === "0") {
-                        document.getElementById('video-title').innerText = data.title || '暂无标题';
-                        document.getElementById('video-cover').src = data.videocoverurl || 'default-cover.png';
-                        document.getElementById('stat-view').innerText = data.stat_view || 'N/A';
-                        document.getElementById('stat-danmu').innerText = data.stat_danmu || 'N/A';
-                        document.getElementById('stat-dianzan').innerText = data.stat_dianzan || 'N/A';
-                        document.getElementById('stat-toubi').innerText = data.stat_toubi || 'N/A';
-                        document.getElementById('stat-shoucang').innerText = data.stat_shoucang || 'N/A';
-                        document.getElementById('stat-zhuanfa').innerText = data.stat_zhuanfa || 'N/A';
-                        document.getElementById('total').innerText = data.total || 'N/A';
-                        document.getElementById('quality').innerText = data.quality || 'N/A';
-                        document.getElementById('video-url-link').href = data.videourl || '#';
-                        document.getElementById('audio-url-link').href = data.audiourl || '#';
+                        document.getElementById('video-title').innerText = data.title;
+                        document.getElementById('video-cover').src = data.videocoverurl;
+                        document.getElementById('stat-view').innerText = data.stat_view;
+                        document.getElementById('stat-danmu').innerText = data.stat_danmu;
+                        document.getElementById('stat-dianzan').innerText = data.stat_dianzan;
+                        document.getElementById('stat-toubi').innerText = data.stat_toubi;
+                        document.getElementById('stat-shoucang').innerText = data.stat_shoucang;
+                        document.getElementById('stat-zhuanfa').innerText = data.stat_zhuanfa;
+                        document.getElementById('total').innerText = data.total;
+                        document.getElementById('quality').innerText = data.quality;
+                        document.getElementById('video-url-link').href = data.videourl;
+                        document.getElementById('audio-url-link').href = data.audiourl;
 
                         document.getElementById('result-section').classList.remove('hidden');
                     } else {
