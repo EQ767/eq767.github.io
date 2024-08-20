@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eric-Search Engine</title>
+    <style>
+        :root {
+            --primary-color: #36d1dc;
+            --secondary-color: #5b86e5;
+            --white: #fff;
+            --dark-gray: #333;
+            --button-hover: #005b85;
+            --button-background: #007bb5;
+            --input-border: #ddd;
+            --input-focus-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2);
+            --transition-duration: 0.3s;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            color: var(--dark-gray);
+        }
+
+        .search-container {
+            background-color: var(--white);
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 90%; /* Adjust to fit smaller screens */
+            width: 100%;
+            animation: fadeIn var(--transition-duration) ease-in-out;
+            transition: transform var(--transition-duration) ease;
+        }
+
+        .search-container:hover {
+            transform: translateY(-10px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap; /* Allows items to wrap to the next line on smaller screens */
+        }
+
+        .search-bar select, 
+        .search-bar input[type="text"] {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--input-border);
+            font-size: 1rem; /* Use rem for font sizes */
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: box-shadow var(--transition-duration) ease;
+            width: 100%; /* Full width on small screens */
+            max-width: 100%; /* Prevents overflow */
+        }
+
+        .search-bar input[type="text"] {
+            flex-grow: 1;
+        }
+
+        .search-bar select:focus,
+        .search-bar input[type="text"]:focus {
+            box-shadow: var(--input-focus-shadow);
+            outline: none;
+        }
+
+        .search-bar img {
+            width: 32px;
+            height: 32px;
+            margin-left: 10px;
+            vertical-align: middle;
+            display: none;
+        }
+
+        .search-container button {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background-color: var(--button-background);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color var(--transition-duration) ease, transform 0.2s ease;
+            width: 100%; /* Full width on small screens */
+            max-width: 100%; /* Prevents overflow */
+        }
+
+        .search-container button:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-3px);
+        }
+
+        @media (min-width: 600px) {
+            .search-container {
+                max-width: 500px; /* Default width for larger screens */
+            }
+
+            .search-bar {
+                flex-wrap: nowrap; /* Prevent wrapping on larger screens */
+            }
+
+            .search-container button {
+                width: auto; /* Button takes its normal width on larger screens */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="search-container">
+    <form id="searchForm">
+        <div class="search-bar">
+            <select id="engine" name="engine" aria-label="Select Search Engine">
+                <option value="bing" data-icon="https://www.bing.com/sa/simg/bing_p_rr_teal_min.ico">Bing</option>
+                <option value="360" data-icon="https://www.so.com/favicon.ico">360</option>
+                <option value="baidu" data-icon="https://www.baidu.com/favicon.ico">Baidu</option>
+                <option value="metaso" data-icon="https://metaso.cn/favicon.ico">Metaso</option>
+                <option value="quark" data-icon="https://quark.sm.cn/favicon.ico">Quark</option>
+            </select>
+            <input type="text" id="query" name="q" placeholder="Enter your search query..." required aria-label="Search Query">
+            <img id="engineIcon" src="https://www.bing.com/sa/simg/bing_p_rr_teal_min.ico" alt="Engine Icon">
+        </div>
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+<script>
+    const searchEngines = {
+        'bing': 'https://bing.com/search?q=',
+        '360': 'https://www.so.com/s?q=',
+        'baidu': 'https://www.baidu.com/s?wd=',
+        'metaso': 'https://metaso.cn/?q=',
+        'quark': 'https://quark.sm.cn/s?q='
+    };
+
+    const engineSelect = document.getElementById('engine');
+    const engineIcon = document.getElementById('engineIcon');
+
+    engineSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        engineIcon.src = selectedOption.getAttribute('data-icon');
+        engineIcon.style.display = 'inline';
+    });
+
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const query = encodeURIComponent(document.getElementById('query').value.trim());
+        const engine = engineSelect.value;
+        if(query) {
+            const url = searchEngines[engine] + query;
+            window.open(url, '_blank');
+        }
+    });
+</script>
+
+</body>
+</html>
