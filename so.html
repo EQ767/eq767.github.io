@@ -134,26 +134,34 @@
     <form id="searchForm">
         <div class="search-bar">
             <select id="engine" name="engine" aria-label="Select Search Engine">
-                <option value="bing" data-icon="https://cn.bing.com/favicon.ico">Bing</option>
+                <option value="Bing" data-icon="https://cn.bing.com/favicon.ico">Bing</option>
+                <option value="Google" data-icon="https://ts1.cn.mm.bing.net/th/id/R-C.0fa3fe04edf6c0202970f2088edea9e7?rik=joOK76LOMJlBPw&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fgoogle-logo-png-open-2000.png&ehk=0PJJlqaIxYmJ9eOIp9mYVPA4KwkGo5Zob552JPltDMw%3d&risl=&pid=ImgRaw&r=0">Google(国内镜像)</option>
+                <option value="Baidu" data-icon="https://www.baidu.com/favicon.ico">Baidu</option>
                 <option value="360" data-icon="https://www.so.com/favicon.ico">360</option>
-                <option value="baidu" data-icon="https://www.baidu.com/favicon.ico">Baidu</option>
-                <option value="metaso" data-icon="https://metaso.cn/favicon.ico">Metaso</option>
-                <option value="quark" data-icon="https://quark.sm.cn/favicon.ico">Quark</option>
+                <option value="Metaso" data-icon="https://metaso.cn/favicon.ico">Metaso</option>
+                <option value="Quark" data-icon="https://quark.sm.cn/favicon.ico">Quark</option>
             </select>
             <input type="text" id="query" name="q" placeholder="Enter your search query..." required aria-label="Search Query">
             <img id="engineIcon" src="https://www.bing.com/sa/simg/bing_p_rr_teal_min.ico" alt="Engine Icon">
         </div>
         <button type="submit">Search</button>
     </form>
+    <!-- WIKI link -->
+    <div style="margin-top: 20px; text-align: center;">
+        <a href="https://54e1ad4b4888.kfd.me/wiki/Wikipedia:%E9%A6%96%E9%A1%B5" target="_blank">
+            <img src="https://kfd.me/img/Wiki_zh-hans.png" alt="Wikipedia Mirror" style="width: 50px; height: 50px;">
+        </a>
+    </div>
 </div>
 
 <script>
     const searchEngines = {
-        'bing': 'https://bing.com/search?q=',
+        'Bing': 'https://bing.com/search?q=',
+        'Google': 'https://google.cloudnative.love/search?q=',
+        'Baidu': 'https://www.baidu.com/s?wd=',
         '360': 'https://www.so.com/s?q=',
-        'baidu': 'https://www.baidu.com/s?wd=',
-        'metaso': 'https://metaso.cn/?q=',
-        'quark': 'https://quark.sm.cn/s?q='
+        'Metaso': 'https://metaso.cn/?q=',
+        'Quark': 'https://quark.sm.cn/s?q='
     };
 
     const engineSelect = document.getElementById('engine');
