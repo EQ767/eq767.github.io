@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            overflow: hidden;
+            background: radial-gradient(circle, #000 30%, #111 100%);
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            background: white;
+            opacity: 0;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+
+        .time, .music {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .music {
+            top: 60px;
+        }
+
+        .time-detail, .player-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            display: none;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .time-detail {
+            font-size: 36px;
+        }
+
+        .date {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+
+        .player-container {
+            width: 330px;
+            height: 450px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="time" id="time">Time</div>
+    <div class="time-detail" id="timeDetail">
+        <div id="timeDisplay"></div>
+        <div class="date" id="dateDisplay"></div>
+    </div>
+
+    <div class="music" id="music">Music</div>
+    <div class="player-container" id="playerContainer">
+        <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=450 src="//music.163.com/outchain/player?type=4&id=794823726&auto=1&height=430"></iframe>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const numStars = 150;
+            const body = document.body;
+
+            // 动态生成星星
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+
+                star.style.top = `${Math.random() * 100}vh`;
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.animationDuration = `${Math.random() * 2 + 1}s`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+
+                body.appendChild(star);
+            }
+
+            // 实时更新时间
+            function updateTime() {
+                const timeDisplay = document.getElementById('timeDisplay');
+                const dateDisplay = document.getElementById('dateDisplay');
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+
+                timeDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+                dateDisplay.textContent = `${year}-${month}-${day}`;
+            }
+
+            function toggleTimeDetail() {
+                const timeDetail = document.getElementById('timeDetail');
+                const isHidden = timeDetail.style.display === 'none';
+                timeDetail.style.display = isHidden ? 'block' : 'none';
+                if (isHidden) {
+                    updateTime();
+                }
+            }
+
+            function togglePlayerContainer() {
+                const playerContainer = document.getElementById('playerContainer');
+                playerContainer.style.display = playerContainer.style.display === 'none' ? 'block' : 'none';
+            }
+
+            document.getElementById('time').addEventListener('click', toggleTimeDetail);
+            document.getElementById('music').addEventListener('click', togglePlayerContainer);
+
+            setInterval(updateTime, 1000);
+            updateTime(); // 初始化时间显示
+        });
+    </script>
+</body>
+</html>

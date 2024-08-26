@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eric.学术搜索</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef2f7;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .search-box {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .search-box:hover {
+            transform: scale(1.02);
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        select {
+            width: 20%;
+            padding: 10px;
+            font-size: 16px;
+            margin-left: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        select:hover {
+            background-color: #f0f0f0;
+        }
+
+        button {
+            width: 10%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .recommend {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .recommend h3 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .recommend a {
+            display: block;
+            padding: 10px;
+            font-size: 16px;
+            text-decoration: none;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            transition: background-color 0.2s;
+        }
+
+        .recommend a:last-child {
+            border-bottom: none;
+        }
+
+        .recommend a:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            right: -300px;
+            top: 0;
+            width: 300px;
+            height: 100%;
+            background-color: #fff;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            transition: right 0.3s;
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+
+        .sidebar.open {
+            right: 0;
+        }
+
+        .sidebar h3 {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .sidebar .history-item {
+            font-size: 14px;
+            color: #555;
+            cursor: pointer;
+            position: relative;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar .history-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .delete-history {
+            position: absolute;
+            right: 10px;
+            color: #999;
+            cursor: pointer;
+            display: none;
+        }
+
+        .history-item:hover .delete-history {
+            display: inline;
+        }
+
+        .sidebar-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            z-index: 1001;
+        }
+    </style>
+</head>
+<body>
+    <h1>学术搜索</h1>
+
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="输入搜索内容..." autofocus>
+            <select id="search-engine">
+                <option value="google">Google Scholar</option>
+                <option value="baidu">百度学术</option>
+                <option value="bing">必应学术</option>
+                <option value="cnki">中国知网</option>
+                <option value="vip">维普</option>
+            </select>
+            <button onclick="search()">搜索</button>
+        </div>
+    </div>
+
+    <div class="recommend">
+        <h3>推荐资源</h3>
+        <a href="https://www.gabormelli.com/RKB/HomePage" target="_blank">GM-RKB 英文百科</a>
+        <a href="https://54e1ad4b48888.kfd.me/wiki/Wikipedia:%E9%A6%96%E9%A1%B5" target="_blank">Wiki 镜像</a>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <div class="sidebar-toggle" onclick="toggleSidebar()">≡ 历史</div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <h3>搜索历史</h3>
+    </div>
+
+    <script>
+        function search() {
+            var query = document.getElementById("search-input").value;
+            var engine = document.getElementById("search-engine").value;
+
+            if (query.trim() !== "") {
+                saveHistory(query);
+                var url = "";
+
+                switch(engine) {
+                    case "google":
+                        url = 'https://x.sci-hub.org.cn/scholar?q=' + encodeURIComponent(query);
+                        break;
+                    case "baidu":
+                        url = 'https://xueshu.baidu.com/s?wd=' + encodeURIComponent(query);
+                        break;
+                    case "bing":
+                        url = 'https://cn.bing.com/academic/search?q=' + encodeURIComponent(query);
+                        break;
+                    case "cnki":
+                        url = 'https://i.cnki.net/searchResult.html?searchword=' + encodeURIComponent(query);
+                        break;
+                    case "vip":
+                        url = 'https://mqikan.cqvip.com/Article/index?from=index&key=' + encodeURIComponent(query);
+                        break;
+                }
+
+                window.open(url, '_blank');
+            }
+        }
+
+        function saveHistory(query) {
+            if (query) {
+                const historyContainer = document.getElementById('sidebar');
+
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerText = query;
+
+                const deleteIcon = document.createElement('span');
+                deleteIcon.className = 'delete-history';
+                deleteIcon.innerText = '✖';
+                deleteIcon.onclick = () => historyContainer.removeChild(historyItem);
+
+                historyItem.appendChild(deleteIcon);
+                historyContainer.appendChild(historyItem);
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            } else {
+                sidebar.classList.add('open');
+            }
+        }
+
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                const focusedElement = document.activeElement;
+                if (focusedElement.id === "search-input") {
+                    search();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
