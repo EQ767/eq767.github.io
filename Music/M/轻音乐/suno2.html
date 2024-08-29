@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>优美的小调(钢琴曲)-张宇桦▞Ericの音乐收藏</title>
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('dragstart', event => event.preventDefault());
+        document.addEventListener('selectstart', event => event.preventDefault());
+    </script>
+        <style>
+            @font-face {
+                font-family: 'ChillCalligraphy';
+                src: url('../云峰林桥体.otf');
+            }
+            
+            *{
+                padding: 0;
+                margin: 0;
+                font-family: 'ChillCalligraphy';
+                -webkit-user-select: none;
+            }
+            
+            body {
+              height: 100%;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 100vh;
+              overflow: hidden;
+              background-color: #6e7cf5;
+            }
+            
+            video{
+                position: absolute;
+                width: 100%;
+            }
+            
+            .shell {
+                position: absolute;    
+              z-index: 1;
+              width: 330px;
+              height: 580px;
+              border-radius: 15px;
+              /* background-color: #fff6e7; */
+              box-shadow: 0 10px 30px #00000085;
+              /* 设置上高光和左高光，使其看起来更加逼真 */
+              border-top: 1px solid rgba(255, 255, 255, .9);
+              border-left: 1px solid rgba(255, 255, 255, .9);
+              background: linear-gradient(to right bottom,
+                      rgba(255, 255, 255, .6),
+                      rgba(255, 255, 255, .3),
+                      rgba(255, 255, 255, .2));
+              /* 重点：使元素背景模糊化 */
+              backdrop-filter: blur(16px);
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+            }
+            .cover {
+              width: 280px;
+              height: 270px;
+              overflow: hidden;
+              position: absolute;
+              top: 20px;
+              border-radius: 5px;
+              box-shadow: 0 5px 30px #7d70ecb7;
+            }
+            
+            .cover img {
+              width: 100%;
+            }
+            
+            .info {
+              position: absolute;
+              top: 305px;
+              text-align: center;
+            }
+            .info .title {
+              font-size: 35px;
+              color: rgb(40, 45, 100);
+            }
+            .info .singer {
+              font-size: 20px;
+              color: #6e7cf5;
+            }
+            .volume-box {
+              display: none;
+              position: absolute;
+              top: 370px;
+              z-index: 1;
+              padding: 0 20px;
+            }
+            .volume-box.active {
+              display: block;
+            }
+            .volume-box .volume-down {
+              position: absolute;
+              left: -15px;
+              cursor: pointer;
+              color: rgb(40, 45, 100);
+            }
+            .volume-box .volume-up {
+              position: absolute;
+              right: -15px;
+              top: 50%;
+              transform: translateY(-12px);
+              cursor: pointer;
+              color: rgb(40, 45, 100);
+            }
+            .volume-box .volume-up::selection {
+              background-color: unset;
+            }
+            .volume-box input[type=range] {
+              height: 5px;
+              width: 150px;
+              margin: 0 0 15px 0;
+            }
+            
+            .btn-box {
+              position: absolute;
+              top: 400px;
+              width: 100%;
+              display: flex;
+              justify-content: center;
+            }
+            .btn-box i {
+              font-size: 24px;
+              color: rgb(40, 45, 100);
+              margin: 0 30px;
+              cursor: pointer;
+            }
+            .btn-box i.active {
+              color: #ff3677;
+            }
+            
+            .music-box {
+              position: absolute;
+              top: 445px;
+            }
+            .music-box input[type=range] {
+              height: 5px;
+              width: 230px;
+              margin: 0 0 10px 0;
+            }
+            .music-box input[type=range]::-webkit-slider-thumb {
+              height: 5px;
+              width: 7px;
+            }
+            .music-box .current-time {
+              position: absolute;
+              left: -35px;
+              top: 50%;
+              transform: translateY(-50%);
+              font-size: 12px;
+              color: #252525;
+            }
+            .music-box .duration {
+              position: absolute;
+              right: -35px;
+              top: 50%;
+              transform: translateY(-50%);
+              font-size: 12px;
+              color: rgb(40, 45, 100);
+            }
+            .music-box .play,
+            .music-box .pause {
+              position: absolute;
+              left: 50%;
+              top: 55px;
+              transform: translateX(-50%);
+              width: 50px;
+              height: 50px;
+              border-radius: 50px;
+              background-color: rgb(160, 200, 250);
+              cursor: pointer;
+              transition: all 0.4s;
+            }
+            .music-box .play i,
+            .music-box .pause i {
+              font-size: 36px;
+              color: rgb(40, 45, 100);
+              position: absolute;
+              left: 50%;
+              top: 50%;
+              transform: translate(-48%, -50%);
+            }
+            .music-box .pause i {
+              font-size: 32px;
+              transform: translate(-50%, -50%);
+            }
+        </style>
+    </head>
+    <body>
+        <img src="https://ts1.cn.mm.bing.net/th/id/R-C.aa7aae7cc555d85bdc85cb7aabde833e?rik=mW8QhzCQfzAZFA&riu=http%3a%2f%2fpic.bizhi360.com%2fbbpic%2f82%2f1582.jpg&ehk=a00hOQqe27ErPFZejaDuK9HlQP9uBZhVH0tsViWdNkY%3d&risl=&pid=ImgRaw&r=0" controls  muted loop autoplay></img>
+        <div class="shell">
+            <div class="cover">
+                <img src="https://pic3.zhimg.com/v2-77569c657f821f099205db9d7784b8c2_r.jpg?source=1940ef5c" alt="">
+            </div>
+            <div class="info">
+                <div class="title">放松时光</div>
+                <div class="singer">Eric;Suno</div>
+            </div>
+            <div class="volume-box">
+                <span class="volume-down"><i class="material-icons">reduce</i></span>
+                <input type="range" class="volume-range" step="1" value="80" min="0" max="100"
+                    oninput="music.volume = this.value/100">
+                <span class="volume-up"><i class="material-icons">add</i></span>
+            </div>
+            <div class="btn-box">
+                <i class="material-icons repeat" onclick="handleRepeat()">重复</i>
+                <i class="material-icons favorite active" onclick="handleFavorite()">♥</i>
+                <i class="material-icons volume" onclick="handleVolume()">音量</i>
+            </div>
+            <div class="music-box">
+                <span class="current-time">0:0</span>
+                <input type="range" class="seekbar" step="1" value="0" min="0" max="100" oninput="handleSeekBar()">
+                <audio class="music-element">
+                    <source src="https://res.sunoapi.net/files/00123705-aba8-4a47-95a9-31f6d3374014.mp3?play=true">
+                </audio>
+                <span class="duration">0:0</span>
+                <span class="play" onclick="handlePlay()">
+                    <i class="material-icons">▶</i>
+                </span>
+            </div>
+        </div>
+    </body>
+    <script>
+        let music = document.querySelector('.music-element')
+        let playBtn = document.querySelector('.play')
+        let seekbar = document.querySelector('.seekbar')
+        let currentTime = document.querySelector('.current-time')
+        let duration = document.querySelector('.duration')
+        //控制音乐播放还是暂停，播放音乐，更改按钮样式为暂停图标，暂停音乐，更改按钮样式为播放图标
+        //给音乐加上一个监听器，当音乐播放完时给按钮重置到播放前的状态，并将音乐时间重置为0
+        function handlePlay() {
+            if(music.paused) {
+                music.play()
+                playBtn.className = 'pause'
+                playBtn.innerHTML = '<i class="material-icons">▢</i>'
+            }else {
+                music.pause()
+                playBtn.className = 'play'
+                playBtn.innerHTML = '<i class="material-icons">▶</i>'
+            }
+            music.addEventListener('ended',function(){
+                playBtn.className = 'play'
+                playBtn.innerHTML = '<i class="material-icons">▶</i>'
+                music.currentTime = 0
+            })
+        }
+        //音乐加载好还没播放的前一帧，将音乐进度条的最大值设为音乐的长度
+        //音乐长度返回的是秒，将其转化后展示出来
+        music.onloadeddata = function () {
+            seekbar.max = music.duration
+            let ds = parseInt(music.duration % 60)
+            let dm = parseInt(music.duration / 60)
+            duration.innerHTML = dm+':'+ds
+        }
+        //音乐播放时间更新时，将进度条设置为当前播放时间，并展示出来
+        music.ontimeupdate = function () {
+            seekbar.value = music.currentTime
+            let cs = parseInt(music.currentTime % 60)
+            let cm = parseInt(music.currentTime / 60)
+            currentTime.innerHTML = cm+':'+cs
+        }
+        //进度条拖动时修改音乐播放时间
+        function handleSeekBar () {
+            music.currentTime = seekbar.value
+        }
+        let favIcon = document.querySelector('.favorite')
+        //添加或去除active类，.classList.toggle函数会判断当前元素是否含有括号中的类，有就减去，没有就加上
+        function handleFavorite () {
+            favIcon.classList.toggle('active')
+        }
+        let repIcon = document.querySelector('.repeat')
+        //设置音乐是否循环播放
+        function handleRepeat () {
+            if(music.loop == true){
+                music.loop = false
+                repIcon.classList.toggle('active')
+            }else{
+                music.loop = true
+                repIcon.classList.toggle('active')
+            }
+        }
+        let volIcon = document.querySelector('.volume')
+        let volBox = document.querySelector('.volume-box')
+        //设置是否显示调节音乐音量的进度条
+        function handleVolume () {
+            volIcon.classList.toggle('active')
+            volBox.classList.toggle('active')
+        }
+        let volumeRange = document.querySelector('.volume-range')
+        let volumeUp = document.querySelector('.volume-up')
+        let volumeDown = document.querySelector('.volume-down')
+        //将音量调大
+        volumeUp.addEventListener('click',function handleVolumeUp () {
+            volumeRange.value = Number(volumeRange.value) + 1
+            music.volume = volumeRange.value / 100
+        })
+        volumeDown.addEventListener('click',handleVolumeDown)
+        //将音量减小
+        function handleVolumeDown () {
+            volumeRange.value = Number(volumeRange.value) - 1
+            music.volume = volumeRange.value / 100
+        }
+    </script>
+</html>
