@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpg" href="https://eq767.github.io/blog/image/head.jpg">
+    <title>网易云 MV 视频下载</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            z-index: 1;
+        }
+        input[type="text"], select {
+            width: 320px;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #3498db;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .download-link {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .download-link:hover {
+            text-decoration: underline;
+        }
+        .loading {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #888;
+        }
+        /* 侧滑栏样式 */
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 2;
+            top: 0;
+            right: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            color: white;
+        }
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+        .comment-section {
+            padding: 20px;
+            font-size: 16px;
+            background-color: #fff;
+            color: #333;
+            border-radius: 8px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>网易云 MV 视频下载</h1>
+        <input type="text" id="mvId" placeholder="请输入 MV ID">
+        <select id="resolution">
+            <option value="240">240p</option>
+            <option value="360">360p</option>
+            <option value="480">480p</option>
+            <option value="720">720p</option>
+            <option value="1080">1080p</option>
+        </select>
+        <button onclick="generateLink()">生成下载链接</button>
+        <div id="linkContainer"></div>
+        <div id="loadingText" class="loading" style="display: none;">正在拉取数据中...</div>
+        <button style="margin-top: 20px;" onclick="openNav()">查看评论</button>
+    </div>
+
+    <!-- 侧滑栏 -->
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <div id="commentContainer" class="comment-section">
+            正在加载评论...
+        </div>
+    </div>
+
+    <script>
+        async function generateLink() {
+            const mvId = document.getElementById('mvId').value;
+            const resolution = document.getElementById('resolution').value;
+            const apiUrl = `https://www.markingchen.ink/mv/url?id=${mvId}&r=${resolution}`;
+            const linkContainer = document.getElementById('linkContainer');
+            const loadingText = document.getElementById('loadingText');
+            
+            // 显示加载状态
+            loadingText.style.display = 'block';
+            linkContainer.innerHTML = '';
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                // 隐藏加载状态
+                loadingText.style.display = 'none';
+
+                if (data.code === 200 && data.data.url) {
+                    const downloadLink = data.data.url;
+                    linkContainer.innerHTML = `<a class="download-link" href="${downloadLink}" target="_blank">点击下载 MV</a>`;
+                } else {
+                    linkContainer.innerHTML = '获取下载链接失败，请检查输入信息或稍后再试。';
+                }
+            } catch (error) {
+                console.error('Error fetching the MV link:', error);
+                loadingText.style.display = 'none';
+                linkContainer.innerHTML = '请求出错，请稍后重试。';
+            }
+        }
+
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "400px";
+            loadComments();
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+
+        async function loadComments() {
+            const mvId = document.getElementById('mvId').value;
+            const commentUrl = `https://www.markingchen.ink/comment/mv?id=${mvId}`;
+            const commentContainer = document.getElementById('commentContainer');
+
+            try {
+                const response = await fetch(commentUrl);
+                const data = await response.json();
+
+                if (data.code === 200 && data.comments.length > 0) {
+                    let commentsHtml = data.comments.map(comment => `
+                        <div style="margin-bottom: 20px; padding: 10px; background-color: #f5f5f5; border-radius: 8px;">
+                            <div style="display: flex; align-items: center;">
+                                <img src="${comment.user.avatarUrl}" alt="avatar" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
+                                <span><strong>${comment.user.nickname}</strong></span>
+                            </div>
+                            <p style="margin-top: 10px;">${comment.content}</p>
+                            <span style="font-size: 12px; color: #999;">${new Date(comment.time).toLocaleString()}</span>
+                            <span style="font-size: 12px; color: #999; float: right;">👍 ${comment.likedCount}</span>
+                        </div>
+                    `).join('');
+                    commentContainer.innerHTML = commentsHtml;
+                } else {
+                    commentContainer.innerHTML = '没有评论或评论加载失败。';
+                }
+            } catch (error) {
+                console.error('Error fetching the comments:', error);
+                commentContainer.innerHTML = '请求出错，请稍后重试。';
+            }
+        }
+    </script>
+</body>
+</html>
