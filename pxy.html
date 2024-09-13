@@ -76,7 +76,7 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('https://mirror.ghproxy.com/https://raw.githubusercontent.com/EQ767/eq767.github.io/main/hjv/%E7%94%A8%E6%88%B7%E5%8D%8F%E8%AE%AE.txt')
+            fetch('https://raw.githubusercontent.com/EQ767/eq767.github.io/main/hjv/%E7%94%A8%E6%88%B7%E5%8D%8F%E8%AE%AE.txt')
                 .then(response => response.text())
                 .then(text => {
                     document.getElementById('agreement-content').textContent = text;
