@@ -1,92 +1,135 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eric Translator</title>
+    <title>Eric Translate</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background-color: #f4f4f4;
             margin: 0;
-        }
-
-        .translator-container {
-            background-color: #fff;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
-
         h1 {
-            margin-bottom: 20px;
+            color: #333;
         }
-
-        textarea {
+        label, input, button {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        input {
+            padding: 8px;
             width: 100%;
-            height: 100px;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            resize: none;
+            max-width: 400px; /* 宽度调整以适应不同设备 */
+            box-sizing: border-box; /* 包含内边距的宽度计算 */
         }
-
         button {
-            background-color: #007bff;
-            color: #fff;
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
             cursor: pointer;
         }
-
         button:hover {
-            background-color: #0056b3;
+            background-color: #45a049;
         }
-
-        #resultContainer {
+        #translationResult {
             margin-top: 20px;
+            font-size: 18px;
+            color: #555;
+            white-space: pre-line; /* 保持换行格式 */
         }
-
-        #targetText {
-            font-size: 1.2em;
-            color: #333;
+        #playButton {
+            display: none; /* 初始隐藏播放按钮 */
+            margin-top: 10px;
+            background-color: #2196F3;
+        }
+        #playButton:hover {
+            background-color: #1976D2;
         }
     </style>
 </head>
 <body>
-    <div class="translator-container">
-        <h1>Eric Translator</h1>
-        <textarea id="sourceText" placeholder="Enter text to translate..."></textarea>
-        <button onclick="translateText()">翻译</button>
-        <div id="resultContainer">
-            <h2>————————</h2>
-            <p id="targetText"></p>
-        </div>
-    </div>
+    <h1>Translate</h1>
+    
+    <!-- 输入区域 -->
+    <label for="wordInput">请输入:</label>
+    <input type="text" id="wordInput" placeholder="请输入单词或句子">
+    
+    <!-- 按钮区域 -->
+    <button onclick="translateWord()" id="translateButton">翻译</button>
+    <button id="playButton" onclick="playAudio()">▶️发音</button>
+    
+    <!-- 翻译结果显示 -->
+    <p id="translationResult"></p>
+
     <script>
-        async function translateText() {
-            const sourceText = document.getElementById('sourceText').value;
-            const url = `https://api.oioweb.cn/api/txt/QQFanyi?sourceText=${encodeURIComponent(sourceText)}`;
+        let audioUrl = ''; // 用于存储音频的URL
 
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
+        // 翻译功能
+        function translateWord() {
+            const word = document.getElementById('wordInput').value;
+            const translateButton = document.getElementById('translateButton');
 
-                if (data.code === 200) {
-                    document.getElementById('targetText').innerText = data.result.targetText;
-                } else {
-                    document.getElementById('targetText').innerText = "Translation failed. Please try again.";
-                }
-            } catch (error) {
-                document.getElementById('targetText').innerText = "Error occurred. Please try again.";
+            if (!word) {
+                document.getElementById('wordInput').style.borderColor = 'red';
+                alert("请输入一个单词或句子");
+                return;
+            } else {
+                document.getElementById('wordInput').style.borderColor = ''; // 恢复原始样式
+            }
+
+            // 禁用翻译按钮并更改文本为“翻译中...”
+            translateButton.disabled = true;
+            translateButton.innerText = '翻译中...';
+
+            // 使用 fetch 调用翻译 API
+            fetch(`https://api.oioweb.cn/api/txt/QQFanyi?sourceText=${encodeURIComponent(word)}`)
+                .then(response => response.json())
+                .then(data => {
+                    // 检查返回的 code 是否为 200（表示成功）
+                    if (data && data.code === 200) {
+                        const result = data.result;
+                        // 显示翻译结果
+                        document.getElementById('translationResult').innerText = 
+                            `原文: ${result.sourceText}\n翻译: ${result.targetText}`;
+                        
+                        // 获取目标语言（翻译后的语言）来设置音频URL
+                        const targetLanguage = result.target;
+
+                        // 根据目标语言设置音频URL（朗读翻译后的词语）
+                        audioUrl = `https://fanyi.so.com/audio?from=${targetLanguage}&to=${targetLanguage}&voice=5&cate=us-speech&query=${encodeURIComponent(result.targetText)}`;
+                        
+                        // 显示播放按钮
+                        document.getElementById('playButton').style.display = 'inline-block';
+                    } else {
+                        alert(`翻译失败: ${data.message || "请稍后重试。"}`);
+                    }
+                })
+                .catch(error => {
+                    console.error("获取翻译结果时出错:", error);
+                    alert("获取翻译结果时出错，请检查网络连接。");
+                })
+                .finally(() => {
+                    // 恢复翻译按钮状态
+                    translateButton.disabled = false;
+                    translateButton.innerText = '翻译';
+                });
+        }
+
+        // 播放音频
+        function playAudio() {
+            if (audioUrl) {
+                const audio = new Audio(audioUrl);
+                audio.play();
+            } else {
+                alert("请先获取翻译结果再播放音频。");
             }
         }
     </script>
