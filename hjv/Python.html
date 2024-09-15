@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows 系统将 Python 文件打包成 APK 教程</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        pre {
+            background: #f4f4f4;
+            border-left: 5px solid #007bff;
+            padding: 10px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: "Courier New", Courier, monospace;
+            background-color: #eaeaea;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+        .step {
+            margin-bottom: 20px;
+        }
+        .tip {
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            padding: 10px;
+            margin: 20px 0;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 6px solid #ffecb5;
+            padding: 10px;
+            margin: 20px 0;
+        }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>将 Python 文件打包成 Android APK 的教程</h1>
+    <p>本教程旨在指导 Windows 用户如何使用 WSL (Windows Subsystem for Linux) 和 Buildozer，将 Python 应用程序打包为 Android APK 文件。(作者也没尝试过,资料是从网上搜索总结的)</p>
+
+    <div class="step">
+        <h2>步骤概览</h2>
+        <ol>
+            <li>安装 WSL（Windows Subsystem for Linux）</li>
+            <li>安装 Python、Kivy 和 Buildozer</li>
+            <li>编写 Python 应用程序</li>
+            <li>使用 Buildozer 打包成 APK</li>
+            <li>部署和运行 APK</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>步骤 1：安装 WSL</h2>
+        <h3>1.1 启用 WSL</h3>
+        <ol>
+            <li>打开 “Windows PowerShell” 并以管理员身份运行。</li>
+            <li>输入以下命令启用 WSL 和虚拟机平台：
+                <pre><code> wsl --install </code></pre>
+            </li>
+            <li>系统将提示重新启动计算机，按提示操作。</li>
+        </ol>
+
+        <h3>1.2 安装 Ubuntu</h3>
+        <ol>
+            <li>重新启动后，打开 “Microsoft Store”，搜索并安装 <strong>Ubuntu</strong>。</li>
+            <li>启动 Ubuntu，设置用户名和密码。</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>步骤 2：安装 Python、Kivy 和 Buildozer</h2>
+        <h3>2.1 更新软件包列表</h3>
+        <pre><code>sudo apt update && sudo apt upgrade -y</code></pre>
+
+        <h3>2.2 安装 Python 及相关依赖</h3>
+        <pre><code>sudo apt install -y python3 python3-pip build-essential git python3-dev</code></pre>
+
+        <h3>2.3 安装 Kivy</h3>
+        <pre><code>pip install kivy</code></pre>
+
+        <h3>2.4 安装 Buildozer</h3>
+        <pre><code>pip install buildozer</code></pre>
+        <p>还需要安装 Android SDK 和 NDK，运行以下命令：</p>
+        <pre><code>sudo apt install -y openjdk-11-jdk zlib1g-dev</code></pre>
+    </div>
+
+    <div class="step">
+        <h2>步骤 3：编写 Python 应用程序</h2>
+        <p>在你的工作目录中创建一个 Python 文件，例如 <code>main.py</code>，内容如下：</p>
+        <pre><code>from kivy.app import App
+from kivy.uix.button import Button
+
+class MyApp(App):
+    def build(self):
+        return Button(text='Hello World')
+
+if __name__ == '__main__':
+    MyApp().run()</code></pre>
+    </div>
+
+    <div class="step">
+        <h2>步骤 4：使用 Buildozer 打包 APK</h2>
+        <h3>4.1 初始化 Buildozer</h3>
+        <pre><code>buildozer init</code></pre>
+        <p>生成的 <code>buildozer.spec</code> 文件是配置文件。</p>
+
+        <h3>4.2 编辑 <code>buildozer.spec</code></h3>
+        <p>修改 <code>buildozer.spec</code> 文件中的以下配置：</p>
+        <pre><code>title = MyApp
+package.name = myapp
+package.domain = org.example
+source.include_exts = py,png,jpg,kv,atlas
+requirements = python3,kivy
+android.arch = arm64-v8a</code></pre>
+
+        <h3>4.3 开始打包 APK</h3>
+        <pre><code>buildozer -v android debug</code></pre>
+
+        <h3>4.4 打包成功</h3>
+        <p>打包完成后，APK 文件会出现在 <code>bin/</code> 目录中。</p>
+    </div>
+
+    <div class="step">
+        <h2>步骤 5：部署和运行 APK</h2>
+        <p>将 APK 文件部署到 Android 设备并运行：</p>
+        <pre><code>buildozer android deploy run</code></pre>
+        <div class="tip">
+            <strong>提示：</strong> 确保 Android 设备已启用 <strong>USB 调试模式</strong> 并通过数据线连接到电脑。
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>可能遇到的问题和解决办法</h2>
+        <div class="warning">
+            <strong>问题 1：</strong> SDK/NDK 下载速度慢或找不到。
+            <p>可以手动下载 Android SDK 和 NDK，并在 <code>buildozer.spec</code> 中设置其路径。</p>
+        </div>
+
+        <div class="warning">
+            <strong>问题 2：</strong> 构建过程中缺少依赖项。
+            <p>可以在 <code>requirements</code> 部分中添加所需依赖，或使用 <code>pip</code> 安装。</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2024 Python to APK Guide. All rights reserved.</p>
+    </footer>
+</div>
+
+</body>
+</html>
