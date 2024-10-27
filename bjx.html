@@ -2,144 +2,142 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bilibili 视频解析下载</title>
+    <title>B站视频解析工具</title>
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #1f1f1f, #575757);
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            max-width: 400px;
-            width: 100%;
-            padding: 30px;
-            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f9f9f9;
         }
         h1 {
-            font-size: 28px;
-            color: #ff9800;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
+            color: #ff5a5f;
         }
-        label {
-            font-size: 16px;
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="url"] {
+            width: 80%;
+            padding: 10px;
+            margin-top: 10px;
             margin-bottom: 10px;
-            display: block;
-            text-align: left;
-            color: #ccc;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            border: 1px solid #333;
-            background-color: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-        input[type="text"]:focus {
-            border-color: #ff9800;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
         button {
-            width: 100%;
-            background-color: #ff9800;
-            color: #fff;
-            padding: 12px;
+            padding: 10px 20px;
+            background-color: #ff5a5f;
+            color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
         }
         button:hover {
-            background-color: #e68900;
-            transform: translateY(-2px);
+            background-color: #e14e50;
         }
-        .result {
-            margin-top: 20px;
+        #result {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .result p {
-            margin: 10px 0;
-            font-size: 16px;
-            color: #ff9800;
+        .video-info {
+            margin-bottom: 20px;
         }
-        .result img {
+        .video-info img {
             max-width: 100%;
-            border-radius: 8px;
-            margin-bottom: 10px;
+            height: auto;
+            border-radius: 5px;
         }
-        .result a {
-            display: block;
-            margin-bottom: 10px;
-            color: #ff9800;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 14px;
-            transition: color 0.3s ease;
+        .stats span {
+            display: inline-block;
+            margin-right: 15px;
+            color: #555;
         }
-        .result a:hover {
-            color: #fff;
+        video {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .error {
+            color: red;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Bilibili 视频解析下载</h1>
-        <label for="videoUrl">请输入 Bilibili 视频链接：</label>
-        <input type="text" id="videoUrl" placeholder="https://www.bilibili.com/video/xxxxxx">
-        <button onclick="parseVideo()">解析视频</button>
 
-        <div class="result" id="result"></div>
-    </div>
-
+    <h1>B站视频解析工具</h1>
+    <form id="videoForm">
+        <label for="videoUrl">请输入B站视频URL：</label><br>
+        <input type="url" id="videoUrl" name="videoUrl" required placeholder="https://www.bilibili.com/video/BV1xnyDYqEmA"><br>
+        <button type="submit">解析视频</button>
+    </form>
+    
+    <div id="result"></div>
+    
     <script>
-        async function parseVideo() {
-            const videoUrl = document.getElementById('videoUrl').value;
-            if (!videoUrl) {
-                alert("请输入视频链接！");
-                return;
+        document.getElementById('videoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let videoUrlInput = document.getElementById('videoUrl').value.trim();
+            if (videoUrlInput.endsWith('/')) {
+                videoUrlInput = videoUrlInput.slice(0, -1);
             }
-
-            // 将视频链接转换为Base64
-            const base64Url = btoa(videoUrl);
-
-            const appId = "l00espipppketj0s";
-            const appSecret = "oVHoy1z8ngKuLWoVkZJI4ZktkJrvAh6G";
-            const apiUrl = `https://www.mxnzp.com/api/bilibili/video?url=${base64Url}&app_id=${appId}&app_secret=${appSecret}`;
-
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                if (data.code === 1) {
-                    let resultHtml = `<p>视频标题: ${data.data.title}</p>`;
-                    resultHtml += `<p>视频描述: ${data.data.desc}</p>`;
-                    resultHtml += `<p><img src="${data.data.cover}" alt="视频封面"></p>`;
-                    resultHtml += `<p>下载链接:</p>`;
-                    data.data.list.forEach(item => {
-                        resultHtml += `<a href="${item.url}" target="_blank">下载 ${item.title} - ${item.durationFormat} - ${item.width}x${item.height}</a>`;
-                    });
-                    document.getElementById('result').innerHTML = resultHtml;
-                } else {
-                    document.getElementById('result').innerHTML = `<p>解析失败: ${data.msg}</p>`;
-                }
-            } catch (error) {
-                document.getElementById('result').innerHTML = `<p>请求出错: ${error.message}</p>`;
-            }
+            
+            // 使用 AllOrigins 代理解决跨域问题
+            const requestUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.cenguigui.cn/api/bilibili/api.php?url=${videoUrlInput}`)}`;
+            
+            document.getElementById('result').innerHTML = '正在解析...';
+            
+            fetch(requestUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP状态码: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // 解析 AllOrigins 的返回数据
+                    const content = JSON.parse(data.contents); // 获取并解析嵌套的 JSON 数据
+                    if (content.code !== 1) {
+                        throw new Error(content.msg || '解析失败');
+                    }
+                    displayResult(content);
+                })
+                .catch(error => {
+                    displayError(`错误: ${error.message}`);
+                });
+        });
+        
+        function displayResult(data) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <div class="video-info">
+                    <h2>${data.title}</h2>
+                    <img src="${data.imgurl}" alt="视频封面">
+                    <p>${data.desc}</p>
+                    <div class="stats">
+                        <span>作者: ${data.user.name}</span>
+                        <span><img src="${data.user.user_img}" alt="用户头像" style="width: 50px; border-radius: 50%; vertical-align: middle;"></span>
+                    </div>
+                </div>
+                <div class="media">
+                    <h3>视频播放</h3>
+                    <video controls>
+                        <source src="${data.data[0].video_url}" type="video/mp4">
+                        您的浏览器不支持视频播放。
+                    </video>
+                </div>
+                <div class="footer">
+                    <p>提示信息: ${data.text.msg}</p>
+                    <p>版权信息: ${data.text.copyright}</p>
+                </div>
+            `;
+        }
+        
+        function displayError(message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<p class="error">${message}</p>`;
         }
     </script>
+    
 </body>
 </html>
