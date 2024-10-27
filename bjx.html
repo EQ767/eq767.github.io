@@ -48,14 +48,16 @@
             height: auto;
             border-radius: 5px;
         }
-        .stats span {
-            display: inline-block;
-            margin-right: 15px;
+        .related {
+            margin-top: 20px;
             color: #555;
         }
-        video {
-            width: 100%;
-            margin-top: 10px;
+        .related a {
+            color: #ff5a5f;
+            text-decoration: none;
+        }
+        .related a:hover {
+            text-decoration: underline;
         }
         .error {
             color: red;
@@ -77,17 +79,16 @@
         document.getElementById('videoForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            let videoUrlInput = document.getElementById('videoUrl').value.trim();
-            if (videoUrlInput.endsWith('/')) {
-                videoUrlInput = videoUrlInput.slice(0, -1);
-            }
+            const videoUrlInput = document.getElementById('videoUrl').value.trim();
+            const base64Url = btoa(videoUrlInput); // 将视频链接转换为Base64
             
-            // 使用 AllOrigins 代理解决跨域问题
-            const requestUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.cenguigui.cn/api/bilibili/api.php?url=${videoUrlInput}`)}`;
+            const appId = "l00espipppketj0s";
+            const appSecret = "oVHoy1z8ngKuLWoVkZJI4ZktkJrvAh6G";
+            const apiUrl = `https://www.mxnzp.com/api/bilibili/video?url=${base64Url}&app_id=${appId}&app_secret=${appSecret}`;
             
             document.getElementById('result').innerHTML = '正在解析...';
             
-            fetch(requestUrl)
+            fetch(apiUrl)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP状态码: ${response.status}`);
@@ -95,12 +96,10 @@
                     return response.json();
                 })
                 .then(data => {
-                    // 解析 AllOrigins 的返回数据
-                    const content = JSON.parse(data.contents); // 获取并解析嵌套的 JSON 数据
-                    if (content.code !== 1) {
-                        throw new Error(content.msg || '解析失败');
+                    if (data.code !== 1) {
+                        throw new Error(data.msg || '解析失败');
                     }
-                    displayResult(content);
+                    displayResult(data.data);
                 })
                 .catch(error => {
                     displayError(`错误: ${error.message}`);
@@ -109,28 +108,37 @@
         
         function displayResult(data) {
             const resultDiv = document.getElementById('result');
+            const relatedVideos = parseRelatedVideos(data.desc);
             resultDiv.innerHTML = `
                 <div class="video-info">
                     <h2>${data.title}</h2>
-                    <img src="${data.imgurl}" alt="视频封面">
-                    <p>${data.desc}</p>
-                    <div class="stats">
-                        <span>作者: ${data.user.name}</span>
-                        <span><img src="${data.user.user_img}" alt="用户头像" style="width: 50px; border-radius: 50%; vertical-align: middle;"></span>
+                    <img src="${data.cover}" alt="视频封面">
+                    <p>${data.desc.split('您可能还喜欢：')[0]}</p>
+                    <div>
+                        <a href="${data.list[0].url}" download>下载视频</a>
                     </div>
                 </div>
-                <div class="media">
-                    <h3>视频播放</h3>
-                    <video controls>
-                        <source src="${data.data[0].video_url}" type="video/mp4">
-                        您的浏览器不支持视频播放。
-                    </video>
-                </div>
-                <div class="footer">
-                    <p>提示信息: ${data.text.msg}</p>
-                    <p>版权信息: ${data.text.copyright}</p>
-                </div>
+                ${relatedVideos ? `<div class="related"><h3>您可能还喜欢：</h3>${relatedVideos}</div>` : ""}
             `;
+        }
+        
+        function parseRelatedVideos(desc) {
+            const relatedText = desc.split('您可能还喜欢：')[1];
+            if (!relatedText) return '';
+            
+            const relatedLinks = relatedText
+                .trim()
+                .split('\n')
+                .map(item => {
+                    const match = item.match(/【(.+)】(BV\w+)/);
+                    if (match) {
+                        const [_, title, bvCode] = match;
+                        return `<a href="https://www.bilibili.com/video/${bvCode}" target="_blank">${title}</a>`;
+                    }
+                    return '';
+                })
+                .join('<br>');
+            return relatedLinks;
         }
         
         function displayError(message) {
