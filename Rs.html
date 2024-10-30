@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -128,10 +129,8 @@
                     <option value="weibo" selected>微博</option>
                     <option value="baidu">百度</option>
                     <option value="zhihu">知乎</option>
-                    <option value="weixin">微信</option>
-                    <option value="bilibili">哔哩哔哩</option>
-                    <option value="douyin">抖音</option>
-                    <option value="news">腾讯新闻</option>
+                    <option value="bili">哔哩哔哩</option>
+                    <option value="douyin">抖音</option>                  
                     <option value="lishi">历史上的今天</option>
                     <option value="toutiao">今日头条</option>
                 </select>
@@ -146,47 +145,56 @@
         </main>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            loadTrendingList('weibo');
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        loadTrendingList('weibo');
 
-            const mainContent = document.getElementById('main-content');
-            const scrollHint = document.getElementById('scroll-hint');
+        const mainContent = document.getElementById('main-content');
+        const scrollHint = document.getElementById('scroll-hint');
 
-            mainContent.addEventListener('scroll', () => {
-                if (mainContent.scrollTop > 0) {
-                    scrollHint.style.display = 'none';
-                }
-            });
-        });
-
-        function changePlatform() {
-            const selectedPlatform = document.getElementById('platforms').value;
-            loadTrendingList(selectedPlatform);
-        }
-
-        async function loadTrendingList(platform) {
-            const trendingList = document.getElementById('trending-list');
-            trendingList.innerHTML = '<li>加载中...</li>';
-            const scrollHint = document.getElementById('scroll-hint');
-            scrollHint.style.display = 'block'; // 重置滑动提示
-
-            try {
-                const response = await fetch(`https://api.oioweb.cn/api/common/fetchHotSearchBoard?type=${platform}`);
-                const data = await response.json();
-
-                // 清空列表并加载新数据
-                trendingList.innerHTML = '';
-                data.result.forEach((item, index) => {
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `<strong>${index + 1}.</strong> <a href="${item.link}" target="_blank">${item.title}</a>`;
-                    trendingList.appendChild(listItem);
-                });
-            } catch (error) {
-                console.error('获取数据失败:', error);
-                trendingList.innerHTML = '<li>加载失败，请稍后再试。</li>';
+        mainContent.addEventListener('scroll', () => {
+            if (mainContent.scrollTop > 0) {
+                scrollHint.style.display = 'none';
             }
+        });
+    });
+
+    function changePlatform() {
+        const selectedPlatform = document.getElementById('platforms').value;
+        loadTrendingList(selectedPlatform);
+    }
+
+    async function loadTrendingList(platform) {
+        const trendingList = document.getElementById('trending-list');
+        trendingList.innerHTML = '<li>加载中...</li>';
+        const scrollHint = document.getElementById('scroll-hint');
+        scrollHint.style.display = 'block'; // 重置滑动提示
+
+        try {
+            const apiUrl = platform === 'lishi' ? 'https://tenapi.cn/v2/history' : `https://tenapi.cn/v2/${platform}hot`;
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+
+            // 检查 API 返回的状态码
+            if (data.code !== 200) {
+                throw new Error(data.msg);
+            }
+
+            // 清空列表并加载新数据
+            trendingList.innerHTML = '';
+            const items = platform === 'lishi' ? data.data.list : data.data;
+
+            items.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<strong>${index + 1}.</strong> <a href="${item.url}" target="_blank">${platform === 'lishi' ? item.title : item.name}</a>`;
+                trendingList.appendChild(listItem);
+            });
+        } catch (error) {
+            console.error('获取数据失败:', error);
+            trendingList.innerHTML = '<li>加载失败，请稍后再试。</li>';
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>
