@@ -75,6 +75,10 @@
         .share-button:hover {
             background: #0056b3;
         }
+
+        .date-selector {
+            margin: 15px 0;
+        }
     </style>
 </head>
 
@@ -85,11 +89,13 @@
             <h1>每日60秒读懂世界</h1>
         </header>
         <div class="news">
-            <!-- 隐藏图像部分 -->
-            <!-- <img id="main-image" src="" alt="今日图片"> -->
+            <div class="date-selector">
+                <label for="days-offset">选择想查看的日期（减去的天数）：</label>
+                <input type="number" id="days-offset" value="0" min="0">
+                <button id="fetch-news">获取新闻</button>
+            </div>
             <h2>日期：<span id="news-date"></span></h2>
-            <p><strong></strong><span id="weiyu"></span></p>
-            <!-- 添加分享按钮 -->
+            <p><strong>微语：</strong><span id="weiyu"></span></p>
             <a id="share-button" class="share-button" href="#" target="_blank">快速分享</a>
             <h2>今日新闻</h2>
             <ul class="news-list" id="news-list"></ul>
@@ -100,31 +106,39 @@
     </div>
 
     <script>
-        fetch('https://api.oioweb.cn/api/common/today')
-            .then(response => response.json())
-            .then(data => {
-                if (data.code === 200) {
-                    const result = data.result;
+        function fetchNews(offset) {
+            fetch(`https://lzw.me/x/iapi/60s/index.php?cors=1&type=60s&offset=${offset}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 200) {
+                        const result = data.data;
 
-                    // 隐藏主图像部分
-                    // document.getElementById('main-image').src = result.image;
-                    
-                    // 更新分享按钮链接
-                    document.getElementById('share-button').href = result.image;
-                    document.getElementById('news-date').innerText = result.date;
-                    document.getElementById('weiyu').innerText = result.weiyu;
+                        document.getElementById('news-date').innerText = result.date;
+                        document.getElementById('weiyu').innerText = result.tip; 
+                        const newsList = document.getElementById('news-list');
+                        newsList.innerHTML = '';
+                        result.news.forEach(item => {
+                            const li = document.createElement('li');
+                            li.innerText = item; 
+                            newsList.appendChild(li);
+                        });
 
-                    const newsList = document.getElementById('news-list');
-                    result.news.forEach(item => {
-                        const li = document.createElement('li');
-                        li.innerText = item;
-                        newsList.appendChild(li);
-                    });
-                } else {
-                    console.error('获取数据失败:', data.msg);
-                }
-            })
-            .catch(error => console.error('请求错误:', error));
+                        document.getElementById('share-button').href = result.url || '#'; 
+                    } else {
+                        console.error('获取数据失败:', data.message);
+                    }
+                })
+                .catch(error => console.error('请求错误:', error));
+        }
+
+        document.getElementById('fetch-news').addEventListener('click', () => {
+            const daysOffset = parseInt(document.getElementById('days-offset').value, 10);
+            const offset = daysOffset + 1; 
+            fetchNews(offset);
+        });
+
+        
+        fetchNews(0);
     </script>
 
 </body>
