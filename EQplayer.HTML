@@ -50,6 +50,7 @@
         .song-info .artist {
             font-size: 0.9em;
             color: #ddd;
+            cursor: pointer; /* 添加鼠标手型 */
         }
         .visualizer {
             height: 100px;
@@ -375,21 +376,22 @@
         function loadTrack(index) {
             currentTrack = index;
             const file = playlist[currentTrack];
+            let artistName = '未知艺术家';
             if (file.url) {
                 audio.src = file.url; // 加载链接
                 songTitle.textContent = file.name;
-                songArtist.textContent = '链接播放';
+                 artistName = '链接播放';
             } else {
                 audio.src = URL.createObjectURL(file); // 加载本地文件
                 const parts = file.name.split('-');
                 if (parts.length === 2) {
                     songTitle.textContent = parts[0].trim();
-                    songArtist.textContent = parts[1].replace(/\.[^/.]+$/, "").trim();
+                    artistName = parts[1].replace(/\.[^/.]+$/, "").trim();
                 } else {
                     songTitle.textContent = file.name;
-                    songArtist.textContent = '未知艺术家';
                 }
             }
+            songArtist.textContent = artistName;
             document.title = file.name || file.url;
             updatePlaylistUI();
             playAudio();
@@ -483,6 +485,15 @@
         // 音量控制
         volumeBtn.addEventListener('click', () => {
             volumeControlDiv.classList.toggle('open');
+        });
+        
+        // 艺术家点击跳转
+        songArtist.addEventListener('click', () => {
+            const artist = songArtist.textContent;
+            if (artist && artist !== '未知艺术家' && artist !== '链接播放') {
+              const bingSearchUrl = `https://bing.com/search?q=${encodeURIComponent(artist)} site:https://music.163.com/artist`;
+              window.open(bingSearchUrl, '_blank');
+            }
         });
     </script>
 </body>
