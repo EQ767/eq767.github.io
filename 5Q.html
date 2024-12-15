@@ -8,8 +8,8 @@
             flex-direction: column;
             align-items: center;
             font-family: sans-serif;
-            margin: 0; /* 移除默认 margin */
-            padding: 20px; /* 添加一些 padding */
+            margin: 0;
+            padding: 20px;
         }
         .board-container {
             display: flex;
@@ -24,9 +24,8 @@
             background: #DEB887;
             padding: 10px;
             border-radius: 5px;
-            transition: transform 0.3s ease-in-out; /* 添加过渡效果 */
+            transition: transform 0.3s ease-in-out;
         }
-
         .cell {
             width: 30px;
             height: 30px;
@@ -36,41 +35,39 @@
             justify-content: center;
             cursor: pointer;
         }
-
         .piece {
             width: 26px;
             height: 26px;
             border-radius: 50%;
         }
-
         .black {
             background: black;
         }
-
         .white {
             background: white;
         }
-
         #status {
             margin: 10px;
             font-size: 20px;
         }
-        .restart-btn, .zoom-btn {
-            cursor: pointer;
+        .button-row {
+            display: flex;
+            gap: 10px;
             margin-top: 20px;
+        }
+        .button {
+            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 5px;
         }
-        .restart-btn svg, .zoom-btn svg {
+        .button svg {
             width: 24px;
             height: 24px;
         }
-
-        /* 确保棋盘在小屏幕上不会超出 */
         @media (max-width: 600px) {
             .board {
-                transform: scale(0.8); /* 缩小棋盘 */
+                transform: scale(0.8);
             }
         }
     </style>
@@ -79,24 +76,13 @@
     <div class="board-container">
         <div id="status">黑方回合</div>
         <div class="board" id="board"></div>
-        <div class="restart-btn" id="restartBtn">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 4V2.5C12 2.22386 12.2239 2 12.5 2H17C17.2761 2 17.5 2.22386 17.5 2.5V7C17.5 7.27614 17.2761 7.5 17 7.5H15.5C15.2239 7.5 15 7.27614 15 7V5.5C15 5.22386 14.7761 5 14.5 5H12.5C12.2239 5 12 4.77614 12 4.5V4Z" fill="currentColor"/>
-                <path d="M12 20V21.5C12 21.7761 12.2239 22 12.5 22H17C17.2761 22 17.5 21.7761 17.5 21.5V17C17.5 16.7239 17.2761 16.5 17 16.5H15.5C15.2239 16.5 15 16.7239 15 17V18.5C15 18.7761 14.7761 19 14.5 19H12.5C12.2239 19 12 19.2239 12 19.5V20Z" fill="currentColor"/>
-                <path d="M11.5 12C11.5 11.4477 11.0523 11 10.5 11H6C5.72386 11 5.5 11.2239 5.5 11.5V13.5C5.5 13.7761 5.72386 14 6 14H10.5C11.0523 14 11.5 13.5523 11.5 13V12Z" fill="currentColor"/>
-                <path d="M18.5 12C18.5 11.4477 18.0523 11 17.5 11H13C12.7239 11 12.5 11.2239 12.5 11.5V13.5C12.5 13.7761 12.7239 14 13 14H17.5C18.0523 14 18.5 13.5523 18.5 13V12Z" fill="currentColor"/>
-                <path d="M12 12C12 11.4477 11.5523 11 11 11H4.5C4.22386 11 4 11.2239 4 11.5V13.5C4 13.7761 4.22386 14 4.5 14H11C11.5523 14 12 13.5523 12 13V12Z" fill="currentColor"/>
-                <path d="M19.5 12C19.5 11.4477 19.0523 11 18.5 11H12C11.7239 11 11.5 11.2239 11.5 11.5V13.5C11.5 13.7761 11.7239 14 12 14H18.5C19.0523 14 19.5 13.5523 19.5 13V12Z" fill="currentColor"/>
-            </svg>
-            <span>重新开始</span>
-        </div>
-        <div class="zoom-btn" id="zoomBtn">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" fill="currentColor"/>
-                <path d="M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20Z" stroke="currentColor" stroke-width="1.5"/>
-                <path d="M21 21L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            <span>放大</span>
+        <div class="button-row">
+            <div class="button" id="restartBtn">
+                <span>重新开始</span>
+            </div>
+            <div class="button" id="undoBtn">
+                <span>悔棋</span>
+            </div>
         </div>
     </div>
 
@@ -104,14 +90,17 @@
         const board = document.getElementById('board');
         const status = document.getElementById('status');
         const restartBtn = document.getElementById('restartBtn');
-        const zoomBtn = document.getElementById('zoomBtn');
+        const undoBtn = document.getElementById('undoBtn');
         const BOARD_SIZE = 15;
         let gameBoard = Array(BOARD_SIZE).fill().map(() => Array(BOARD_SIZE).fill(null));
         let isBlackTurn = true;
         let gameOver = false;
-        let isZoomed = false;
+        let moveHistory = [];
 
-        function createBoard(){
+        // 创建音频对象
+        const moveSound = new Audio("https://down.ear0.com:3321/index/preview?soundid=39242&type=mp3&audio=sound.mp3&token=czovL2Rvd24uZWFyMC5jb206MzMyMS9pbmRleC9wcmV2aWV3P3NvdW5kaWQ9MzkyNDImdHlwZT1tcDMmYXVkaW89c291bmQubXAz&sound=audio.mp3");
+
+        function createBoard() {
             board.innerHTML = '';
             for (let i = 0; i < BOARD_SIZE; i++) {
                 for (let j = 0; j < BOARD_SIZE; j++) {
@@ -139,6 +128,11 @@
             e.target.appendChild(piece);
 
             gameBoard[row][col] = isBlackTurn ? 'black' : 'white';
+            moveHistory.push({ row, col, color: isBlackTurn ? 'black' : 'white' });
+
+            // 播放音效
+            moveSound.currentTime = 0; // 重置音频播放进度
+            moveSound.play();
 
             if (checkWin(row, col)) {
                 status.textContent = `${isBlackTurn ? '黑' : '白'}方胜利!`;
@@ -152,12 +146,11 @@
 
         function checkWin(row, col) {
             const directions = [
-                [[0, 1], [0, -1]],  // 水平
-                [[1, 0], [-1, 0]],  // 垂直
-                [[1, 1], [-1, -1]], // 对角线
-                [[1, -1], [-1, 1]]  // 反对角线
+                [[0, 1], [0, -1]],
+                [[1, 0], [-1, 0]],
+                [[1, 1], [-1, -1]],
+                [[1, -1], [-1, 1]]
             ];
-
             const currentColor = gameBoard[row][col];
 
             for (const direction of directions) {
@@ -166,7 +159,6 @@
                 for (const [dx, dy] of direction) {
                     let x = row + dx;
                     let y = col + dy;
-                    
                     while (
                         x >= 0 && x < BOARD_SIZE &&
                         y >= 0 && y < BOARD_SIZE &&
@@ -184,22 +176,32 @@
             return false;
         }
 
-        function resetGame(){
+        function undoMove() {
+            if (moveHistory.length === 0 || gameOver) return;
+
+            const lastMove = moveHistory.pop();
+            const { row, col } = lastMove;
+
+            gameBoard[row][col] = null;
+
+            const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+            if (cell.firstChild) cell.removeChild(cell.firstChild);
+
+            isBlackTurn = !isBlackTurn;
+            status.textContent = `${isBlackTurn ? '黑' : '白'}方回合`;
+        }
+
+        function resetGame() {
             gameBoard = Array(BOARD_SIZE).fill().map(() => Array(BOARD_SIZE).fill(null));
+            moveHistory = [];
             isBlackTurn = true;
             gameOver = false;
             status.textContent = '黑方回合';
             createBoard();
         }
 
-        function toggleZoom(){
-            isZoomed = !isZoomed;
-            board.style.transform = isZoomed ? 'scale(1.2)' : 'scale(1)';
-            zoomBtn.querySelector('span').textContent = isZoomed ? '缩小' : '放大';
-        }
-
-        restartBtn.addEventListener('click',resetGame)
-        zoomBtn.addEventListener('click', toggleZoom)
+        restartBtn.addEventListener('click', resetGame);
+        undoBtn.addEventListener('click', undoMove);
     </script>
 </body>
 </html>
