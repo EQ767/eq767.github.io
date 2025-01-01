@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="一个集合了各种在线工具和资源的页面，包括游戏、音乐、天文、猫图、B站热榜、视频解析、Eq·Player、在线电脑文本编辑和翻译器,学术搜索引擎。">
+    <meta name="description" content="一个**了各种在线工具和资源的页面，包括游戏、音乐、天文、猫图、B站热榜、视频解析、Eq·Player、在线电脑文本编辑和翻译器,学术搜索引擎。">
     <meta name="keywords" content="在线工具,实用, 游戏, 音乐, 天文, 猫图, B站热榜, 视频解析, Eq·Player, 在线文本编辑, 翻译器,学术搜索">
     <link rel="icon" href="https://pic3.zhimg.com/v2-77569c657f821f099205db9d7784b8c2_r.jpg?source=1940ef5c" type="image/jpg">
     <title>Eric's工具集 | 在线资源和实用工具</title>
@@ -166,8 +166,10 @@
                 tabContents[tabIndex].classList.add('active');
             });
 
+            // 默认激活第一个标签页
             tabsContainer.querySelector('.tab').click();
 
+            // 监听页面可见性变化，控制视频播放
             document.addEventListener('visibilitychange', function() {
                 if (document.visibilityState === 'visible') {
                     video.play();
@@ -205,118 +207,125 @@
         <button class="tab">实用工具</button>
         <button class="tab tab-coffee">请杯咖啡</button>
     </div>
+    
+    <!-- 娱乐内容 -->
     <div class="tab-content active">
         <div class="grid">
             <div class="card">
                 <h2>游戏</h2>
                 <p>各种有趣的在线游戏</p>
-                <a href="https://eq767.github.io/all-game/" target="_blank">进入</a>
+                <a href="https://eq767.github.io/all-game/" target="_blank" rel="noopener noreferrer">进入</a>
             </div>                    
             <div class="card">
                 <h2>音乐</h2>
                 <p>在线音乐播放和资源</p>
-                <a href="https://eq767.github.io/music.HTML" target="_blank">进入</a>
+                <a href="https://eq767.github.io/music.HTML" target="_blank" rel="noopener noreferrer">进入</a>
             </div>
             <div class="card">
                 <h2>MV</h2>
                 <p>在线MV下载</p>
-                <a href="https://eq767.github.io/MV.html" target="_blank">进入</a>
+                <a href="https://eq767.github.io/MV.html" target="_blank" rel="noopener noreferrer">进入</a>
             </div>            
             <div class="card">
                 <h2>Bing</h2>
                 <p>高清必应壁纸下载</p>
-                <a href="https://eq767.github.io/Bing/" target="_blank">进入</a>
+                <a href="https://eq767.github.io/Bing/" target="_blank" rel="noopener noreferrer">进入</a>
             </div>
             <div class="card">
                 <h2>天文</h2>
                 <p>天文图片和信息</p>
-                <a href="https://eq767.github.io/AstronomyPic.html" target="_blank">进入</a>
+                <a href="https://eq767.github.io/AstronomyPic.html" target="_blank" rel="noopener noreferrer">进入</a>
             </div>
             <div class="card">
                 <h2>猫图</h2>
                 <p>可爱的猫咪图片</p>
-                <a href="https://eq767.github.io/Cat.html" target="_blank">进入</a>
+                <a href="https://eq767.github.io/Cat.html" target="_blank" rel="noopener noreferrer">进入</a>
             </div>
             <div class="card">
                 <h2>视频解析</h2>
                 <p>免费看剧看视频</p>
-                <a href="https://eq767.github.io/VJ.html" target="_blank">进入</a>
+                <a href="https://eq767.github.io/VJ.html" target="_blank" rel="noopener noreferrer">进入</a>
             </div>
             <div class="card">
                 <h2>B站热榜</h2>
                 <p>哔哩哔哩热门视频排行</p>
-                <a href="https://eq767.github.io/Bilihot.html" target="_blank">进入</a>
+                <a href="https://eq767.github.io/Bilihot.html" target="_blank" rel="noopener noreferrer">进入</a>
             </div>
             <div class="card">
                 <h2>全网热搜榜</h2>
                 <p>实时热搜榜单</p>
-                <a href="https://eq767.github.io/Rs.html" target="_blank">进入</a>
+                <a href="https://eq767.github.io/Rs.html" target="_blank" rel="noopener noreferrer">进入</a>
             </div>
             <div class="card">
                 <h2>六十秒读懂世界</h2>
                 <p>快速了解全球新闻</p>
-                <a href="https://eq767.github.io/60.html" target="_blank">进入</a>
+                <a href="https://eq767.github.io/60.html" target="_blank" rel="noopener noreferrer">进入</a>
             </div>
         </div>
     </div>
+    
+    <!-- 实用工具内容 -->
     <div class="tab-content">
         <div class="grid">
             <div class="card">
                 <h2>B站视频</h2>
                 <p>Bili视频解析</p>
-                <a href="https://eq767.github.io/bjx.html" target="_blank">进入</a>
+                <a href="https://eq767.github.io/bjx.html" target="_blank" rel="noopener noreferrer">进入</a>
             </div>
             <div class="card">
                 <h2>在线文本编辑</h2>
                 <p>方便的在线文本编辑工具</p>
-                <a href="https://eq767.github.io/editor.html" target="_blank">进入</a>
+                <a href="https://eq767.github.io/editor.html" target="_blank" rel="noopener noreferrer">进入</a>
                 </div>
             <div class="card">
                 <h2>搜索工具</h2>
-                <p>方便的在线的综合搜索引擎集合</p>
-                <a href="https://eq767.github.io/so.html" target="_blank">进入</a>
+                <p>方便的在线的综合搜索引擎**</p>
+                <a href="https://eq767.github.io/so.html" target="_blank" rel="noopener noreferrer">进入</a>
             </div>
             <div class="card">
                 <h2>学术搜索</h2>
-                <p>方便的在线的学术搜索引擎集合</p>
-                <a href="https://eq767.github.io/spro.html" target="_blank">进入</a>
+                <p>方便的在线的学术搜索引擎**</p>
+                <a href="https://eq767.github.io/spro.html" target="_blank" rel="noopener noreferrer">进入</a>
             </div>            
             <div class="card">
                 <h2>翻译器</h2>
                 <p>多语言在线翻译工具</p>
-                <a href="https://eq767.github.io/Translator.html" target="_blank">进入</a>
-            </div> <!-- 问题修正：这个 <div> 标签现在已关闭 -->
+                <a href="https://eq767.github.io/Translator.html" target="_blank" rel="noopener noreferrer">进入</a>
+            </div>
             <div class="card">
                 <h2>Ericの音乐私藏</h2>
                 <p>Ericの音乐私藏,由Eric在互联网中收集的音乐。</p>
-                <a href="https://eq767.github.io/Music/" target="_blank">进入</a>
+                <a href="https://eq767.github.io/Music/" target="_blank" rel="noopener noreferrer">进入</a>
             </div>
             <div class="card">
                 <h2>AI音乐</h2>
                 <p>在线suno AI音乐,来自别的网站,绝对好用。</p>
-                <a href="https://sunoapi.net/" target="_blank">进入</a>
+                <a href="https://sunoapi.net/" target="_blank" rel="noopener noreferrer">进入</a>
             </div>            
             <div class="card">
                 <h2>Eq·Player</h2>
                 <p>方便在线多功能媒体播放</p>
-                <a href="https://eq767.github.io/EQplayer.HTML" target="_blank">进入</a>
+                <a href="https://eq767.github.io/EQplayer.HTML" target="_blank" rel="noopener noreferrer">进入</a>
             </div>                            
             <div class="card">
                 <h2>EQ Vplayer</h2>
                 <p>在线简洁祝频Link播放器</p>
-                <a href="https://eq767.github.io/EQplayer.HTML" target="_blank">进入</a>
+                <a href="https://eq767.github.io/LinkPlayer/" target="_blank" rel="noopener noreferrer">进入</a>
             </div>            
         </div>
+    </div>
 
-        <div class="tab-content">
-            <div class="donate">
-                <h2>喜欢我的工具吗？</h2>
-                <p>请支持我，请我喝杯咖啡吧！注:该站已于2025年1月9日暂停更新。</p>
-                <a href="https://eq767.github.io/ds.html" target="_blank">请杯咖啡</a>
-            </div>
+    <!-- 请杯咖啡内容 -->
+    <div class="tab-content">
+        <div class="donate">
+            <h2>喜欢我的工具吗？</h2>
+            <p>请支持我，请我喝杯咖啡吧！注:该站已于2025年1月9日暂停更新。</p>
+            <a href="https://eq767.github.io/ds.html" target="_blank" rel="noopener noreferrer">打赏☕</a>
         </div>
+    </div>
 
-        <div id="view-count">加载中...</div>
+    <!-- 访问量统计 -->
+    <div id="view-count">加载中...</div>
     </div>
 </body>
 </html>
