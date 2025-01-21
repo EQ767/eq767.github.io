@@ -1,12 +1,11 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
     <title>Eric's 解析器</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-image: url('https://eqshare521.wordpress.com/wp-content/uploads/2024/07/real-esrganv3-anime_0727_1908058515401210510833932.png');
+            background-image: url('https://img-baofun.zhhainiao.com/pcwallpaper_ugc/static/d70a0c6cf0d93540e14f6141edfc7388.jpg?x-oss-process=image/resize,m_lfit,w_1920,h_1080');
             background-size: cover;
             background-position: center;
             color: #333;
@@ -15,9 +14,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 1024px; /* 设置为背景图片的高度 */
+            height: 1024px;
         }
-        .container {
+        #container {
             width: 90%;
             max-width: 600px;
             background-color: rgba(255, 255, 255, 0.9);
@@ -28,7 +27,7 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            min-height: 1024px; /* 设置为背景图片的高度 */
+            min-height: 1024px;
         }
         .back-link {
             position: absolute;
@@ -85,6 +84,12 @@
             color: white;
             border-color: #007bff;
         }
+        /* 添加B站按钮选中时的样式 */
+        .radio-group input[type="radio"][value="bilibili"]:checked + label {
+            background-color: #FB7299;
+            color: white;
+            border-color: #FB7299;
+        }
         .button {
             width: 100%;
             padding: 10px;
@@ -116,17 +121,16 @@
     </style>
 </head>
 <body onload="showAlert()">
-    <div class="container">
-        <a class="back-link" href="https://eq767.github.io/" target="_blank">
-            <img src="https://eqshare521.wordpress.com/wp-content/uploads/2024/07/img_20240727_1758106667717241734431601.jpg" alt="返回">
-        </a>
+    <div id="container" class="container">
         <h1>Eric's 解析器</h1>
         <div class="input-group">
-            <label for="videoUrl">请输入视频网址:</label>
-            <input type="text" id="videoUrl" class="entry">
+            <label for="videoUrl">请输入网址或BV号:</label>
+            <input type="text" id="videoUrl" class="entry" placeholder="支持各大VIP视频网址,支持B站BV号，如：BV1WQykY5EXt">
         </div>
         <fieldset class="radio-group">
             <legend>选择解析接口:</legend>
+            <input type="radio" id="apiBili" name="api" value="bilibili">
+            <label for="apiBili">B站</label>
             <input type="radio" id="api1" name="api" value="https://jx.xyflv.cc/?url=" checked>
             <label for="api1">咸鱼</label>
             <input type="radio" id="api2" name="api" value="https://jx.5566jiexi.com/?url=">
@@ -148,8 +152,7 @@
         </fieldset>
         <button id="parseButton" class="button" onclick="parseVideo()">解析</button>
         <button id="nightModeButton" class="button" onclick="toggleNightMode()">开启黑夜模式</button>
-        <button id="fullscreenButton" class="button" onclick="toggleFullscreen()">全屏显示</button>
-        <iframe id="resultFrame" src=""></iframe>
+        <iframe id="resultFrame" src="" allowfullscreen></iframe>
     </div>
 
     <script>
@@ -159,10 +162,11 @@
             alert('Night mode provided by this page is not recommended.\n不建议使用此页面页面提供的黑夜模式');
         }
 
-        function parseVideo() {
+        async function parseVideo() {
             var videoUrl = document.getElementById('videoUrl').value.trim();
             var apiRadios = document.getElementsByName('api');
             var selectedApi = '';
+            
             for (var i = 0; i < apiRadios.length; i++) {
                 if (apiRadios[i].checked) {
                     selectedApi = apiRadios[i].value;
@@ -175,8 +179,30 @@
                 return;
             }
 
-            var apiUrl = selectedApi + encodeURIComponent(videoUrl);
-            document.getElementById('resultFrame').src = apiUrl;
+            // 如果选择了B站解析接口
+            if (selectedApi === 'bilibili') {
+                if (!videoUrl.startsWith('BV') || videoUrl.length !== 12) {
+                    alert('请输入正确的BV号');
+                    return;
+                }
+                try {
+                    const response = await fetch(`https://api.injahow.cn/bparse/?bv=${videoUrl}&p=1&format=mp4&otype=json`);
+                    const data = await response.json();
+                    
+                    if (data.code === 0 && data.url) {
+                        document.getElementById('resultFrame').src = data.url;
+                    } else {
+                        alert('B站视频解析失败，请检查BV号是否正确');
+                    }
+                } catch (error) {
+                    alert('解析出错，请稍后重试');
+                    console.error('Error:', error);
+                }
+            } else {
+                // 使用其他解析接口
+                var apiUrl = selectedApi + encodeURIComponent(videoUrl);
+                document.getElementById('resultFrame').src = apiUrl;
+            }
         }
 
         function toggleNightMode() {
@@ -184,19 +210,6 @@
             document.body.classList.toggle('night-mode', isNightMode);
             const nightModeButton = document.getElementById('nightModeButton');
             nightModeButton.textContent = isNightMode ? '关闭黑夜模式' : '开启黑夜模式';
-        }
-
-        function toggleFullscreen() {
-            var iframe = document.getElementById('resultFrame');
-            if (iframe.requestFullscreen) {
-                iframe.requestFullscreen();
-            } else if (iframe.mozRequestFullScreen) { // Firefox
-                iframe.mozRequestFullScreen();
-            } else if (iframe.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                iframe.webkitRequestFullscreen();
-            } else if (iframe.msRequestFullscreen) { // IE/Edge
-                iframe.msRequestFullscreen();
-            }
         }
     </script>
 </body>
