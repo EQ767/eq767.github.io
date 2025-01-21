@@ -1,0 +1,97 @@
+[
+    {
+        "name": "爱奇艺",
+        "link": "https://www.iqiyi.com/",
+        "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.uVkpoZS2S1EXJHtyWRI07AAAAA",
+        "tags": ["视频", "影视"]
+    },
+    {
+        "name": "腾讯视频",
+        "link": "https://v.qq.com/",
+        "img": "https://favicon.qqsuu.cn/https://v.qq.com/",
+        "tags": ["视频", "影视"]
+    },
+    {
+        "name": "优酷视频",
+        "link": "https://www.youku.com/",
+        "img": "https://img.alicdn.com/imgextra/i2/O1CN01H566QS1ytLD8jtxZt_!!6000000006636-0-tps-200-200.jpg",
+        "tags": ["视频", "影视"]
+    },
+    {
+        "name": "追剧影视",
+        "link": "https://zjuys.com/",
+        "img": "https://favicon.qqsuu.cn/https://zjuys.com/",
+        "tags": ["视频", "影视"]
+    },
+    {
+        "name": "Bilibili",
+        "link": "https://www.bilibili.com/",
+        "img": "https://favicon.qqsuu.cn/https://www.bilibili.com/",
+        "tags": ["视频", "动漫", "影音"]
+    },
+    {
+        "name": "抖音",
+        "link": "https://www.douyin.com/?is_from_mobile_home=1&recommend=1",
+        "img": "https://favicon.qqsuu.cn/https://www.douyin.com/",
+        "tags": ["短视频", "社交"]
+    },
+    {
+        "name": "快手",
+        "link": "https://kuaishou.cn/?isHome=1",
+        "img": "https://favicon.qqsuu.cn/https://kuaishou.cn/",
+        "tags": ["短视频", "社交"]
+    },
+    {
+        "name": "网易云音乐",
+        "link": "https://music.163.com/",
+        "img": "https://favicon.qqsuu.cn/https://music.163.com/",
+        "tags": ["音乐"]
+    },
+    {
+        "name": "QQ音乐",
+        "link": "https://y.qq.com/",
+        "img": "https://tse4-mm.cn.bing.net/th/id/OIP-C.aEaXBKK-yY0RIZ5jh1I4rgHaHa",
+        "tags": ["音乐"]
+    },
+    {
+        "name": "漫画站",
+        "link": "https://www.manhuazhan.com/",
+        "img": "https://favicon.qqsuu.cn/https://www.manhuazhan.com/",
+        "tags": ["漫画"]
+    },
+    {
+        "name": "笔趣阁",
+        "link": "https://www.bqg128.com/",
+        "img": "https://favicon.qqsuu.cn/https://www.bqg128.com/",
+        "tags": ["小说"]
+    },
+    {
+        "name": "微博",
+        "link": "https://www.weibo.com/",
+        "img": "https://h5.sinaimg.cn/m/weibo-lite/img/pwalogo.417d1674.svg",
+        "tags": ["社交"]
+    },
+    {
+        "name": "壁纸",
+        "link": "https://haowallpaper.com/",
+        "img": "https://favicon.qqsuu.cn/https://haowallpaper.com/",
+        "tags": ["壁纸"]
+    },
+    {
+        "name": "ALL",
+        "link": "https://eq767.github.io/all.html",
+        "img": "https://favicon.qqsuu.cn/https://eq767.github.io/",
+        "tags": ["所有功能"]
+    },
+    {
+        "name": "GPT Free",
+        "link": "https://site.eqing.tech/",
+        "img": "https://tse2-mm.cn.bing.net/th/id/OIP-C.RPe0ThRMPmKnvybT7Z28JQHaHa?rs=1&pid=ImgDetMain",
+        "tags": ["人工智能","AI","Chat"],
+    {
+        "name": "沉浸式时钟",
+        "link": "https://zhouql.vip/staticweb/clock/",
+        "img": "https://favicon.qqsuu.cn/https://zhouql.vip/staticweb/clock/",
+        "tags": ["时间","钟"]        
+    }
+]

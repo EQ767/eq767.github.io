@@ -4,313 +4,67 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Eric小站</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" />
   <style>
-    body {
-      margin: 0;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      background-image: linear-gradient(to bottom right, #ff0050, #f9f059);
-      background-size: cover;
-      background-repeat: no-repeat;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: white;
-      transition: background 0.5s ease;
-      position: relative;
-    }
-
-    /* 右键菜单样式 */
-    #customContextMenu {
-      display: none;
+    /* 搜索建议样式 */
+    #suggestions {
       position: absolute;
-      background-color: rgba(0,0,0,0.9);
-      border: 1px solid #444;
-      border-radius: 5px;
-      padding: 5px 0;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(204, 204, 204, 0.3);
+      border-radius: 0 0 12px 12px;
+      max-height: 250px;
+      overflow-y: auto;
       z-index: 1000;
-      width: 150px;
-    }
-    #customContextMenu div {
-      padding: 8px 20px;
-      cursor: pointer;
-      white-space: nowrap;
-      color: #fff;
-      font-size: 14px;
-    }
-    #customContextMenu div:hover {
-      background-color: rgba(255,255,255,0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      display: none; /* 默认隐藏 */
     }
 
-    .top-bar {
-      display: flex;
-      justify-content: flex-start;
-      width: 90%;
-      max-width: 1000px;
-      margin-top: 10px;
-    }
-    .top-bar > div {
-      display: flex;
-      align-items: center;
-    }
-    .top-bar > div > i {
-      margin-right: 10px;
-      font-size: 24px;
+    #suggestions li {
+      padding: 12px 20px;
       cursor: pointer;
-      transition: color 0.3s;
-    }
-    .top-bar > div > i:hover {
-      color: #ffeb3b;
+      color: #333;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
 
-    .time-container {
-      text-align: center;
-      margin-top: 30px;
+    #suggestions li:last-child {
+      border-bottom: none;
     }
-    .time {
-      font-size: 4em;
-      font-weight: bold;
-      margin-bottom: 5px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
-    .date {
-      font-size: 1.2em;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+
+    #suggestions li:hover {
+      background: rgba(240, 240, 240, 0.9);
+      padding-left: 25px;
     }
 
     .search-bar {
-      display: flex;
-      align-items: center;
-      background-color: rgba(255, 255, 255, 0.9);
-      padding: 10px 20px;
-      border-radius: 30px;
-      width: 80%;
-      max-width: 800px;
-      margin: 20px auto;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      transition: background-color 0.3s;
-    }
-    .search-bar:hover {
-      background-color: rgba(255, 255, 255, 1);
-    }
-    .search-bar input {
-      border: none;
-      background: none;
-      outline: none;
-      flex: 1;
-      font-size: 1em;
-      color: #333;
-    }
-    .search-bar > i:last-child {
-      margin-left: 10px;
-      color: #555;
-      cursor: pointer;
-      transition: color 0.3s;
-    }
-    .search-bar > i:last-child:hover {
-      color: #000;
+      position: relative;
     }
 
-    .search-mode-toggle {
-      margin-left: 10px;
-      cursor: pointer;
-      color: #555;
-      font-size: 0.9em;
-      padding: 5px 10px;
-      border: 1px solid #555;
-      border-radius: 15px;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    .search-mode-toggle:hover {
-      background-color: #555;
-      color: #fff;
+    /* 美化滚动条 */
+    #suggestions::-webkit-scrollbar {
+      width: 8px;
     }
 
-    .app-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-      gap: 15px;
-      width: 90%;
-      max-width: 1000px;
-      margin-bottom: 20px;
-      transition: opacity 0.5s ease;
-    }
-    .app-icon {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 10px;
-      background-color: rgba(255, 255, 255, 0.85);
-      border-radius: 15px;
-      color: #333;
-      font-size: 0.9em;
-      transition: transform 0.3s ease, box-shadow 0.3s;
-      text-decoration: none;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .app-icon:hover {
-      transform: scale(1.1);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    .app-icon img {
-      width: 40px;
-      height: 40px;
-      margin-bottom: 5px;
-    }
-    .app-icon[data-name="添加标签"] {
-      background-color: #000000;
-      color: white;
-    }
-    /* 拖动时的样式 */
-    .dragging {
-      opacity: 0.5;
+    #suggestions::-webkit-scrollbar-track {
+      background: rgba(240, 240, 240, 0.5);
+      border-radius: 0 0 10px 0;
     }
 
-    .bottom-bar {
-      display: flex;
-      justify-content: center;
-      width: 90%;
-      max-width: 1000px;
-      margin-bottom: 20px;
-      gap: 10px;
-    }
-    .bottom-bar > div {
-      display: flex;
-      align-items: center;
-      padding: 6px 10px;
-      background-color: rgba(255, 255, 255, 0.8);
-      border-radius: 20px;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.3s;
-      flex: 1;
-      justify-content: center;
-      font-size: 0.8em;
-    }
-    .bottom-bar > div:hover {
-      background-color: rgba(255, 255, 255, 1);
-      transform: translateY(-2px);
-    }
-    .bottom-bar > div > i, 
-    .bottom-bar > div > img {
-      margin-right: 5px;
-      width: 20px;
-      height: 20px;
-      color: #333;
+    #suggestions::-webkit-scrollbar-thumb {
+      background: rgba(180, 180, 180, 0.5);
+      border-radius: 4px;
     }
 
-    /* 页面最底部的链接栏 */
-    .footer-links {
-      position: fixed;
-      bottom: 5px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 15px;
-      font-size: 0.9em;
-      background: rgba(0,0,0,0.5);
-      padding: 5px 10px;
-      border-radius: 10px;
-      z-index: 100;
-    }
-    .footer-links a {
-      color: #fff;
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-    .footer-links a:hover {
-      color: #ffeb3b;
-    }
-
-    /* 响应式设计 */
-    @media (max-width: 768px) {
-      .time {
-        font-size: 3em;
-      }
-      .date {
-        font-size: 1em;
-      }
-      .search-bar {
-        width: 90%;
-      }
-      .app-container {
-        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-        gap: 10px;
-      }
-      .app-icon {
-        padding: 8px;
-        font-size: 0.8em;
-      }
-      .app-icon img {
-        width: 35px;
-        height: 35px;
-      }
-      .bottom-bar > div {
-        padding: 8px 12px;
-        font-size: 0.9em;
-      }
-      .bottom-bar > div > i, .bottom-bar > div > img {
-        font-size: 16px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .time {
-        font-size: 2.5em;
-      }
-      .date {
-        font-size: 0.9em;
-      }
-      .search-bar {
-        width: 95%;
-        padding: 8px 15px;
-      }
-      .app-container {
-        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-        gap: 8px;
-      }
-      .app-icon {
-        padding: 6px;
-        font-size: 0.7em;
-      }
-      .app-icon img {
-        width: 30px;
-        height: 30px;
-      }
-      .bottom-bar > div {
-        padding: 6px 10px;
-        font-size: 0.8em;
-      }
-      .bottom-bar > div > i, .bottom-bar > div > img {
-        font-size: 14px;
-      }
-    }
-
-    /* 极简模式下隐藏除叶子图标、时间和每日一言外的元素 */
-    .minimalist-mode .top-bar,
-    .minimalist-mode .search-bar,
-    .minimalist-mode .app-container,
-    .minimalist-mode .bottom-bar,
-    .minimalist-mode .date {
-      display: none;
-    }
-    /* 极简模式下每日一言样式 */
-    .minimalist-mode #dailyQuote {
-      display: block;
-      margin-top: 10px;
-      font-size: 1.2em;
-      text-align: center;
-      max-width: 80%;
-      line-height: 1.5;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-      color: #fff;
-    }
-    /* 非极简模式隐藏每日一言 */
-    #dailyQuote {
-      display: none;
+    #suggestions::-webkit-scrollbar-thumb:hover {
+      background: rgba(160, 160, 160, 0.7);
     }
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" />
 </head>
 <body>
   <div id="customContextMenu"></div>
@@ -318,6 +72,9 @@
   <div class="top-bar">
     <div id="leaf-icon" title="切换极简模式">
       <i class="fas fa-leaf"></i>
+    </div>
+    <div id="desktop-toggle" title="切换桌面风格">
+      <img src="1.png" alt="切换桌面风格">
     </div>
   </div>
 
@@ -328,9 +85,10 @@
   </div>
 
   <div class="search-bar">
-    <input type="text" id="search" placeholder="输入并搜索..." onkeydown="handleSearch(event)">
-    <i class="fas fa-search" id="searchIcon" title="搜索" onclick="performSearch()"></i>
-    <span class="search-mode-toggle" id="searchModeToggle" onclick="toggleSearchMode()">站内搜</span>
+    <input type="text" id="search" placeholder="输入并搜索...">
+    <i class="fas fa-search" id="searchIcon" title="搜索"></i>
+    <span class="search-mode-toggle" id="searchModeToggle" data-mode="external" onclick="toggleSearchMode()">站外搜</span>
+    <ul id="suggestions"></ul>
   </div>
 
   <div class="app-container" id="app-container">
@@ -349,354 +107,139 @@
     </div>
   </div>
 
-  <!-- 页面最下方的打赏和用户协议链接 -->
   <div class="footer-links">
     <a href="more.html" target="_blank">more</a>
-    <a href="https://eq767.github.io/ds.html" target="_blank">打赏</a>
-    <a href="https://eq767.github.io/pxy.html" target="_blank">协议</a>
+    <a href="ds.html" target="_blank">打赏</a>
+    <a href="pxy.html" target="_blank">协议</a>
   </div>
 
+  <script src="script.js"></script>
   <script>
-    let minimalist = false;
-    let searchModeInternal = true;
-    const appContainer = document.getElementById("app-container");
-    const searchModeToggle = document.getElementById("searchModeToggle");
-    const dailyQuoteElement = document.getElementById("dailyQuote");
+    // 搜索模式状态，true 表示站外搜（Bing搜索），false 表示站内搜
+    let isExternalSearch = true;
 
-    // 获取右键菜单元素
-    const contextMenu = document.getElementById("customContextMenu");
-
-    // 获取已删除的标签
-    const deletedApps = JSON.parse(localStorage.getItem("deletedApps")) || [];
-
-    // 初始化应用列表
-    const initialApps = [
-      { name: "所有功能", link: "https://eq767.github.io/all.html", img: "https://pic3.zhimg.com/v2-77569c657f821f099205db9d7784b8c2_r.jpg?source=1940ef5c" },
-      { name: "爱奇艺", link: "https://www.iqiyi.com/", img: "https://tse1-mm.cn.bing.net/th/id/OIP-C.uVkpoZS2S1EXJHtyWRI07AAAAA" },
-      { name: "腾讯视频", link: "https://v.qq.com/", img: "https://favicon.qqsuu.cn/https://v.qq.com/" },
-      { name: "优酷视频", link: "https://www.youku.com/", img: "https://img.alicdn.com/imgextra/i2/O1CN01H566QS1ytLD8jtxZt_!!6000000006636-0-tps-200-200.jpg"},
-      { name: "追剧影视", link: "https://zjuys.com/", img: "https://favicon.qqsuu.cn/https://zjuys.com/" },
-      { name: "Bilibili", link: "https://www.bilibili.com/", img: "https://favicon.qqsuu.cn/https://www.bilibili.com/" },
-      { name: "抖音", link: "https://www.douyin.com/?is_from_mobile_home=1&recommend=1", img: "https://favicon.qqsuu.cn/https://www.douyin.com/" },
-      { name: "快手", link: "https://kuaishou.cn/?isHome=1", img: "https://favicon.qqsuu.cn/https://kuaishou.cn/" },
-      { name: "网易云音乐", link: "https://music.163.com/", img: "https://favicon.qqsuu.cn/https://music.163.com/" },
-      { name: "QQ音乐", link: "https://y.qq.com/", img: "https://tse4-mm.cn.bing.net/th/id/OIP-C.aEaXBKK-yY0RIZ5jh1I4rgHaHa" },
-      { name: "漫画站", link: "https://www.manhuazhan.com/", img: "https://favicon.qqsuu.cn/https://www.manhuazhan.com/" },
-      { name: "笔趣阁", link: "https://www.bqg128.com/", img: "https://favicon.qqsuu.cn/https://www.bqg128.com/" },
-      { name: "微博", link: "https://www.weibo.com/", img: "https://h5.sinaimg.cn/m/weibo-lite/img/pwalogo.417d1674.svg" },
-      { name: "壁纸", link: "https://haowallpaper.com/", img: "https://favicon.qqsuu.cn/https://haowallpaper.com/" },
-      { name: "GPT Free", link: "https://site.eqing.tech/", img: "https://tse2-mm.cn.bing.net/th/id/OIP-C.RPe0ThRMPmKnvybT7Z28JQHaHa?rs=1&pid=ImgDetMain" }
-    ];
-
-    // 用于当前拖动排序的数据存储
-    let customApps = JSON.parse(localStorage.getItem("customApps")) || initialApps;
-
-    // 加载应用列表，排除已删除的应用
-    function loadApps() {
-      appContainer.innerHTML = ''; // 清空现有应用
-      customApps.forEach((app, index) => {
-        if (!deletedApps.includes(app.name)) {
-          const appElement = document.createElement("a");
-          appElement.href = app.link;
-          appElement.className = "app-icon";
-          appElement.setAttribute("data-name", app.name);
-          appElement.setAttribute("draggable", "true");
-          appElement.setAttribute("data-index", index);
-          appElement.target = "_blank";
-          appElement.innerHTML = `<img src="${app.img}" alt="${app.name}">${app.name}`;
-
-          // 拖动事件
-          appElement.addEventListener("dragstart", dragStart);
-          appElement.addEventListener("dragover", dragOver);
-          appElement.addEventListener("drop", drop);
-          appElement.addEventListener("dragend", dragEnd);
-
-          // 添加右键删除功能
-          appElement.addEventListener("contextmenu", function(e) {
-            e.preventDefault();
-            showContextMenu(e.pageX, e.pageY, [
-              { text: "删除标签", action: () => deleteApp(app.name) }
-            ]);
-          });
-          appContainer.appendChild(appElement);
-        }
-      });
-      // 添加“添加标签”按钮
-      const addTag = document.createElement("a");
-      addTag.href = "#";
-      addTag.className = "app-icon";
-      addTag.setAttribute("data-name", "添加标签");
-      addTag.id = "addTag";
-      addTag.innerHTML = `<i class="fas fa-plus"></i><span>添加标签</span>`;
-      // 添加右键菜单给添加标签按钮
-      addTag.addEventListener("contextmenu", function(e) {
-        e.preventDefault();
-        showContextMenu(e.pageX, e.pageY, [
-          { text: "更换背景", action: changeBackground },
-          { text: "添加标签", action: addTagFunc }
-        ]);
-      });
-      // 点击添加标签按钮
-      addTag.addEventListener("click", function(e) {
-        e.preventDefault();
-        addTagFunc();
-      });
-      appContainer.appendChild(addTag);
-    }
-
-    function dragStart(e) {
-      e.currentTarget.classList.add("dragging");
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text/plain", e.currentTarget.getAttribute("data-index"));
-    }
-
-    function dragOver(e) {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = "move";
-    }
-
-    function drop(e) {
-      e.preventDefault();
-      const fromIndex = e.dataTransfer.getData("text/plain");
-      const toIndex = e.currentTarget.getAttribute("data-index");
-      if (fromIndex === null || toIndex === null) return;
-      // 交换数组中的位置
-      [customApps[fromIndex], customApps[toIndex]] = [customApps[toIndex], customApps[fromIndex]];
-      localStorage.setItem("customApps", JSON.stringify(customApps));
-      loadApps();
-    }
-
-    function dragEnd(e) {
-      e.currentTarget.classList.remove("dragging");
-    }
-
-    function deleteApp(appName) {
-      deletedApps.push(appName);
-      localStorage.setItem("deletedApps", JSON.stringify(deletedApps));
-      loadApps();
-      hideContextMenu();
-      alert(`已删除标签：${appName}`);
-    }
-
-    function addTagFunc() {
-      const tabName = prompt("请输入新标签的名称：");
-      if (tabName) {
-        // 检查是否已经存在
-        const exists = customApps.some(app => app.name === tabName) || tabName === "添加标签";
-        if (exists) {
-          alert("标签名称已存在，请选择其他名称。");
-          return;
-        }
-        const tabLink = prompt("请输入新标签的链接地址（可选）：");
-        const newApp = {
-          name: tabName,
-          link: tabLink ? tabLink : "#",
-          img: "https://tse2-mm.cn.bing.net/th/id/OIP-C.s3FHxaLA7w4d0H2pDsdH4gHaHa" // 默认图标
-        };
-        customApps.push(newApp);
-        localStorage.setItem("customApps", JSON.stringify(customApps));
-        loadApps();
-      }
-    }
-
-    function changeBackground() {
-      const colors = ["#ff0050", "#f9f059", "#00c14e", "#00b7ff", "#000000", "#ff7f50", "#6a5acd", "#ffa500"];
-      const color1 = colors[Math.floor(Math.random() * colors.length)];
-      const color2 = colors[Math.floor(Math.random() * colors.length)];
-      document.body.style.backgroundImage = `linear-gradient(to bottom right, ${color1}, ${color2})`;
-    }
-
-    // 新增：清除缓存功能
-    function clearCache() {
-      if (confirm("确定清除缓存并重置所有设置吗？")) {
-        localStorage.clear();
-        location.reload();
-      }
-    }
-
-    // 修改右键菜单：现在可以显示清除缓存选项
-    function showContextMenu(x, y, options) {
-      contextMenu.innerHTML = '';
-      options.forEach(option => {
-        const div = document.createElement("div");
-        div.textContent = option.text;
-        div.onclick = option.action;
-        contextMenu.appendChild(div);
-      });
-      // 添加“清除缓存”选项到全局右键菜单（如果还没有添加）
-      if (!options.some(opt => opt.text === "清除缓存")) {
-        const clearCacheOption = document.createElement("div");
-        clearCacheOption.textContent = "清除缓存";
-        clearCacheOption.onclick = clearCache;
-        contextMenu.appendChild(clearCacheOption);
-      }
-      contextMenu.style.left = x + 'px';
-      contextMenu.style.top = y + 'px';
-      contextMenu.style.display = 'block';
-    }
-
-    function hideContextMenu() {
-      contextMenu.style.display = 'none';
-    }
-
-    document.addEventListener("click", function() {
-      hideContextMenu();
-    });
-
-    // 全局右键事件（如果在app-icon上未处理）
-    document.addEventListener("contextmenu", function(e) {
-      if(e.target.closest(".app-icon")) return;
-      e.preventDefault();
-      showContextMenu(e.pageX, e.pageY, [
-        { text: "更换背景", action: changeBackground },
-        { text: "添加标签", action: addTagFunc }
-      ]);
-    });
-
-    // 底部按钮功能
-    document.getElementById("createTab").addEventListener("click", function() {
-      addTagFunc();
-    });
-
-    document.getElementById("changeWallpaper").addEventListener("click", function() {
-      changeBackground();
-    });
-
-    document.getElementById("deleteTab").addEventListener("click", function() {
-      const availableApps = customApps.filter(app => !deletedApps.includes(app.name));
-      if (availableApps.length === 0) {
-        alert("没有可删除的标签。");
-        return;
-      }
-      const appNames = availableApps.map(app => app.name).join("\n");
-      const tabToDelete = prompt("请输入要删除的标签名称：\n" + appNames);
-      if (tabToDelete) {
-        const appExists = availableApps.some(app => app.name === tabToDelete);
-        if (appExists) {
-          deleteApp(tabToDelete);
-        } else {
-          alert("未找到指定的标签名称。");
-        }
-      }
-    });
-
-    // 添加标签功能点击事件（如果单独点击添加标签按钮）
-    document.getElementById("addTag")?.addEventListener("click", function(e) {
-      e.preventDefault();
-      addTagFunc();
-    });
-
-    // 搜索功能
+    // 执行搜索，根据当前模式执行外部或站内搜索
     function performSearch() {
-      const query = document.getElementById("search").value.trim();
-      if (query === "") {
-        console.log("请输入搜索内容。");
-        return;
-      }
-      if (searchModeInternal) {
-        // 站内搜：过滤应用图标
-        filterApps(query);
+      const query = document.getElementById('search').value.trim();
+      if (!query) return;
+
+      if (isExternalSearch) {
+        // 使用 Bing 进行外部搜索，新窗口打开
+        window.open(`https://www.bing.com/search?q=${encodeURIComponent(query)}`, '_blank');
       } else {
-        // 站外搜：跳转到 Bing 搜索结果页
-        window.open('https://bing.com/search?q=' + encodeURIComponent(query), '_blank');
+        // 实现站内搜索逻辑
+        console.log('站内搜索:', query);
+        window.location.href = `search.html?q=${encodeURIComponent(query)}`;
       }
     }
 
-    function filterApps(query) {
-      const lowerQuery = query.toLowerCase();
-      const apps = document.querySelectorAll(".app-icon");
-      apps.forEach(function(app) {
-        const name = app.getAttribute("data-name").toLowerCase();
-        if (app.getAttribute("data-name") === "添加标签") {
-          app.style.display = "flex"; // 始终显示“添加标签”按钮
-          return;
-        }
-        if (name.indexOf(lowerQuery) === -1) {
-          app.style.display = "none";
-        } else {
-          app.style.display = "flex";
-        }
-      });
-    }
+    // 监听搜索框的键盘事件
+    document.getElementById('search').addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault(); // 阻止默认行为
+        performSearch();
+        document.getElementById('suggestions').style.display = 'none';
+      }
+    });
+
+    // 监听搜索图标的点击事件
+    document.getElementById('searchIcon').addEventListener('click', function() {
+      performSearch();
+      document.getElementById('suggestions').style.display = 'none';
+    });
 
     // 切换搜索模式
     function toggleSearchMode() {
-      searchModeInternal = !searchModeInternal;
-      searchModeToggle.textContent = searchModeInternal ? "站内搜" : "站外搜";
-      // 清空搜索框并重置显示
-      document.getElementById("search").value = "";
-      const apps = document.querySelectorAll(".app-icon");
-      apps.forEach(function(app) {
-        app.style.display = "flex";
-      });
+      const toggle = document.getElementById('searchModeToggle');
+      isExternalSearch = !isExternalSearch;
+      
+      toggle.textContent = isExternalSearch ? '站外搜' : '站内搜';
+      toggle.setAttribute('data-mode', isExternalSearch ? 'external' : 'internal');
+      
+      // 切换时隐藏建议列表
+      document.getElementById('suggestions').style.display = 'none';
     }
 
-    // 新增：处理输入框键盘事件（例如按下 Enter 键时执行搜索）
-    function handleSearch(event) {
-      if (event.key === "Enter") {
-        performSearch();
-      }
-    }
+    // Bing 搜索建议回调函数
+    window.bing = {
+      sug: function(data) {
+        const suggestionsList = document.getElementById('suggestions');
+        suggestionsList.innerHTML = '';
 
-    // 叶子图标点击切换极简模式
-    document.getElementById("leaf-icon").addEventListener("click", function(event) {
-      event.stopPropagation(); // 防止事件冒泡
-      minimalist = !minimalist;
-      if (minimalist) {
-        document.body.classList.add("minimalist-mode");
-        fetchDailyQuote();
-      } else {
-        document.body.classList.remove("minimalist-mode");
-      }
-    });
+        if (!data?.AS?.Results || !isExternalSearch) {
+          suggestionsList.style.display = 'none';
+          return;
+        }
 
-    // 在极简模式下，点击任意键或点击空白处退出极简模式
-    function exitMinimalistMode() {
-      if (minimalist) {
-        minimalist = false;
-        document.body.classList.remove("minimalist-mode");
-      }
-    }
-
-    // 监听键盘按键
-    document.addEventListener("keydown", function(event) {
-      exitMinimalistMode();
-    });
-
-    // 监听空白处点击
-    document.addEventListener("click", function(event) {
-      const leafIcon = document.getElementById("leaf-icon");
-      if (!leafIcon.contains(event.target)) {
-        exitMinimalistMode();
-      }
-    });
-
-    // 动态更新时间与日期
-    function updateTime() {
-      const timeElement = document.getElementById("time");
-      const dateElement = document.getElementById("date");
-      const now = new Date();
-      timeElement.textContent = now.toLocaleTimeString();
-      dateElement.textContent = now.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit', weekday: 'short' });
-    }
-
-    // 获取每日一言
-    function fetchDailyQuote() {
-      fetch('https://v1.hitokoto.cn/')
-        .then(response => response.json())
-        .then(data => {
-          dailyQuoteElement.innerHTML = `"${data.hitokoto}"<br/>— ${data.from}${data.from_who ? ' · ' + data.from_who : ''}<br/>创作者: ${data.creator}`;
-        })
-        .catch(err => {
-          dailyQuoteElement.textContent = "无法获取每日一言";
+        let hasResults = false;
+        data.AS.Results.forEach(result => {
+          if (result.Suggests) {
+            result.Suggests.forEach(suggest => {
+              hasResults = true;
+              const li = document.createElement('li');
+              li.textContent = suggest.Txt;
+              li.addEventListener('click', () => {
+                document.getElementById('search').value = suggest.Txt;
+                // performSearch(); // 禁用点击建议时的跳转功能
+                suggestionsList.style.display = 'none';
+              });
+              suggestionsList.appendChild(li);
+            });
+          }
         });
+
+        suggestionsList.style.display = hasResults ? 'block' : 'none';
+      }
+    };
+
+    // 获取搜索建议
+    function getSuggestions(query) {
+      if (!isExternalSearch) return;
+      const script = document.createElement('script');
+      script.src = `https://api.bing.com/qsonhs.aspx?type=cb&q=${encodeURIComponent(query)}&cb=window.bing.sug`;
+      document.body.appendChild(script);
+      script.onload = () => document.body.removeChild(script);
     }
 
-    // 每秒更新时间
-    setInterval(updateTime, 1000);
-    updateTime();
-    loadApps();
+    // 防抖函数
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+
+    // 防抖处理搜索建议
+    const debouncedGetSuggestions = debounce((query) => {
+      const suggestionsList = document.getElementById('suggestions');
+      if (!query || !isExternalSearch) {
+        suggestionsList.style.display = 'none';
+        return;
+      }
+      getSuggestions(query);
+    }, 300);
+
+    // 搜索框输入事件监听
+    document.getElementById('search').addEventListener('input', function() {
+      const query = this.value.trim();
+      debouncedGetSuggestions(query);
+    });
+
+    // 点击页面其他地方时隐藏建议列表
+    document.addEventListener('click', function(e) {
+      const searchBar = document.querySelector('.search-bar');
+      if (!searchBar.contains(e.target)) {
+        document.getElementById('suggestions').style.display = 'none';
+      }
+    });
+
+    // 按 ESC 键隐藏建议列表
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.getElementById('suggestions').style.display = 'none';
+      }
+    });
   </script>
 </body>
-
 </html>
