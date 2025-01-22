@@ -87,7 +87,7 @@
         "name": "GPT Free",
         "link": "https://site.eqing.tech/",
         "img": "https://tse2-mm.cn.bing.net/th/id/OIP-C.RPe0ThRMPmKnvybT7Z28JQHaHa?rs=1&pid=ImgDetMain",
-        "tags": ["人工智能","AI","Chat"],
+        "tags": ["人工智能","AI","Chat"]  // 删除这里的逗号
     },
     {
         "name": "沉浸式时钟",
