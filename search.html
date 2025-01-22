@@ -9,21 +9,21 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: black;  /* 修改背景为纯黑色 */
-            color: #fff;
+            background-color: #f5f5f5;
+            color: #333;
         }
         .container {
+            width: 95%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            background-color: rgba(0, 0, 0, 0.6);
+            background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
             text-align: center;
-            color: #fff;
+            color: #333;
             font-size: 2rem;
         }
         .search-bar {
@@ -37,7 +37,7 @@
             padding: 10px;
             font-size: 16px;
             border-radius: 5px;
-            border: none;
+            border: 1px solid #ddd;
             margin-right: 10px;
         }
         .search-bar button {
@@ -77,6 +77,7 @@
             border-radius: 50%;
             margin-bottom: 10px;
             cursor: pointer;
+            max-width: 100%;
         }
         .app-card a {
             text-decoration: none;
@@ -103,8 +104,16 @@
             font-size: 14px;
         }
 
-        /* 响应式设计 */
         @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+                margin: 10px 0;
+            }
+            .container {
+                width: 100%;
+                padding: 10px;
+                border-radius: 0;
+            }
             .search-bar {
                 flex-direction: column;
                 align-items: center;
@@ -112,9 +121,42 @@
             .search-bar input {
                 width: 80%;
                 margin-bottom: 10px;
+                margin-right: 0;
             }
             .search-bar button {
                 width: 80%;
+            }
+            .app-list {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 10px;
+            }
+            .app-card {
+                padding: 8px;
+            }
+            .app-card a {
+                font-size: 16px;
+            }
+            .tag {
+                font-size: 12px;
+                padding: 3px 6px;
+            }
+            #gif-container img {
+                max-width: 200px;
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .app-list {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+            .app-card img {
+                width: 80px;
+                height: 80px;
+            }
+            .app-card a {
+                font-size: 14px;
             }
         }
     </style>
@@ -130,14 +172,13 @@
             <!-- 搜索结果会展示在这里 -->
         </div>
         <div id="gif-container" style="text-align: center; display: none;">
-            <img src="https://img.zcool.cn/community/01e0835d70bcb8a801202f17957e0e.gif" alt="请搜索">
+            <!-- 失败状态会展示在这里 -->
         </div>
     </div>
 
     <script>
-        let initialApps = []; // 将改为空数组，等待从JSON文件加载数据
+        let initialApps = [];
 
-        // 添加加载JSON数据的函数
         async function loadApps() {
             try {
                 const response = await fetch('so.json');
@@ -145,26 +186,41 @@
                     throw new Error('Failed to load apps data');
                 }
                 initialApps = await response.json();
-                // 如果当前URL中有搜索参数，执行搜索
+
                 const urlParams = new URLSearchParams(window.location.search);
                 const query = urlParams.get("q");
+
                 if (query) {
                     document.getElementById("search-input").value = query;
                     search();
                 } else {
-                    document.getElementById("gif-container").style.display = "block";
-                    document.getElementById("search-bar").style.display = "none";
+                    showFailureState();
                 }
             } catch (error) {
                 console.error('Error loading apps:', error);
-                document.getElementById("app-list").innerHTML = '<p style="color: red;">加载应用数据失败</p>';
+                showFailureState();
             }
         }
 
-        // 显示搜索结果
+        function showFailureState() {
+            document.getElementById("search-bar").style.display = "none";
+            document.getElementById("app-list").innerHTML = '';
+            document.getElementById("gif-container").style.display = "block";
+            document.getElementById("gif-container").innerHTML = `
+                <h2 style="color: #ff4444;">查找失败</h2>
+                <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXRpbWw3ODlldGdrOTYxaXZicDZ3YnN4MmMyemF5N2F0NTEwY3lvbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TqiwHbFBaZ4ti/giphy.gif"
+                    alt="查找失败"
+                    style="max-width: 200px; width: 100%; height: auto;">
+            `;
+        }
+
         function displayApps(apps) {
             const appList = document.getElementById("app-list");
             appList.innerHTML = "";
+            if (apps.length === 0) {
+                appList.innerHTML = '<p style="text-align: center; color: #666;">未找到相关结果</p>';
+                return;
+            }
             apps.forEach(app => {
                 const appCard = document.createElement("div");
                 appCard.classList.add("app-card");
@@ -181,60 +237,51 @@
             });
         }
 
-        // 处理搜索
         function search() {
-            const query = document.getElementById("search-input").value.toLowerCase();
-            if (query) {
-                // 将查询词按空格分割成多个关键词
-                const keywords = query.split(/\s+/);
-                const filteredApps = initialApps.filter(app => {
-                    // 逐字匹配
-                    return keywords.some(keyword =>
-                        app.name.toLowerCase().includes(keyword) ||
-                        app.tags.some(tag => tag.toLowerCase().includes(keyword))
-                    );
-                });
-
-                // 排序：按照与关键词的匹配度排序
-                filteredApps.sort((a, b) => {
-                    const aMatchCount = keywords.filter(keyword =>
-                        a.name.toLowerCase().includes(keyword) ||
-                        a.tags.some(tag => tag.toLowerCase().includes(keyword))
-                    ).length;
-                    const bMatchCount = keywords.filter(keyword =>
-                        b.name.toLowerCase().includes(keyword) ||
-                        b.tags.some(tag => tag.toLowerCase().includes(keyword))
-                    ).length;
-                    return bMatchCount - aMatchCount;  // 匹配度高的排前面
-                });
-
-                displayApps(filteredApps);
-                updateUrl(query); // 更新 URL 参数
-            } else {
-                // 如果没有输入关键词，则显示"加载中..."动画
-                document.getElementById("gif-container").style.display = "block";
-                document.getElementById("app-list").innerHTML = "";
+            const query = document.getElementById("search-input").value.trim().toLowerCase();
+            if (!query) {
+                window.location.href = 'search.html';
+                return;
             }
+
+            const keywords = query.split(/\s+/);
+            const filteredApps = initialApps.filter(app => {
+                return keywords.some(keyword =>
+                    app.name.toLowerCase().includes(keyword) ||
+                    app.tags.some(tag => tag.toLowerCase().includes(keyword))
+                );
+            });
+
+            filteredApps.sort((a, b) => {
+                const aMatchCount = keywords.filter(keyword =>
+                    a.name.toLowerCase().includes(keyword) ||
+                    a.tags.some(tag => tag.toLowerCase().includes(keyword))
+                ).length;
+                const bMatchCount = keywords.filter(keyword =>
+                    b.name.toLowerCase().includes(keyword) ||
+                    b.tags.some(tag => tag.toLowerCase().includes(keyword))
+                ).length;
+                return bMatchCount - aMatchCount;
+            });
+
+            displayApps(filteredApps);
+            updateUrl(query);
         }
 
-        // 更新 URL 查询参数
         function updateUrl(query) {
             const url = new URL(window.location);
             url.searchParams.set('q', query);
             history.pushState(null, '', url);
         }
 
-        // 监听回车键
         function handleKeyPress(event) {
             if (event.key === "Enter") {
                 search();
             }
         }
 
-        // 页面加载时加载应用数据
-        window.onload = function() {
-            loadApps();
-        };
+        window.onload = loadApps;
     </script>
 </body>
 </html>
+<!-- 67*254 (最小尺寸) -->
