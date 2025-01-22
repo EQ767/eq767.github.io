@@ -1,5 +1,11 @@
 [
     {
+        "name": "ALL",
+        "link": "https://eq767.github.io/all.html",
+        "img": "https://favicon.qqsuu.cn/https://eq767.github.io/",
+        "tags": ["所有功能", "导航"]
+    },    
+    {
         "name": "爱奇艺",
         "link": "https://www.iqiyi.com",
         "img": "https://tse1-mm.cn.bing.net/th/id/OIP-C.uVkpoZS2S1EXJHtyWRI07AAAAA",
@@ -76,12 +82,6 @@
         "link": "https://haowallpaper.com",
         "img": "https://favicon.qqsuu.cn/https://haowallpaper.com/",
         "tags": ["壁纸", "图片"]
-    },
-    {
-        "name": "ALL",
-        "link": "https://eq767.github.io/all.html",
-        "img": "https://favicon.qqsuu.cn/https://eq767.github.io/",
-        "tags": ["所有功能", "导航"]
     },
     {
         "name": "GPT Free",
