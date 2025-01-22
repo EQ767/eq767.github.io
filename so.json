@@ -31,7 +31,7 @@
     },
     {
         "name": "抖音",
-        "link": "https://www.douyin.com",
+        "link": "https://www.douyin.com/?is_from_mobile_home=1",
         "img": "https://favicon.qqsuu.cn/https://www.douyin.com/",
         "tags": ["短视频", "社交"]
     },
