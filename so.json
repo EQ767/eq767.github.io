@@ -90,10 +90,10 @@
         "tags": ["人工智能", "AI", "Chat"]
     },
     {
-        "name": "无限云网盘",
+        "name": "云盘",
         "link": "https://chogo.teracloud.jp/browser/",
         "img": "https://infini-cloud.net/en/img/logo-IC1.svg",
-        "tags": ["Dev", "infini", "免费"]
+        "tags": ["Dev", "Infini Cloud", "免费"]
     },    
     {
         "name": "沉浸式时钟",
