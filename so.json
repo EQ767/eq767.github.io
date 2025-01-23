@@ -90,10 +90,10 @@
         "tags": ["人工智能", "AI", "Chat"]
     },
     {
-        "name": "Dav",
+        "name": "网盘",
         "link": "https://chogo.teracloud.jp/browser/",
         "img": "https://chogo.teracloud.jp/browser/android-chrome-192x192.png",
-        "tags": ["Dev", "网盘", "免费"]
+        "tags": ["Dev", "网盘", "Infini Cloud"]
     },    
     {
         "name": "沉浸式时钟",
