@@ -120,7 +120,7 @@
 <div class="container">
     <div class="form-group">
         <label for="url">API 或 JSON 文件 URL:</label>
-        <input type="url" id="url" placeholder="请输入有效的 URL，例如 https://paopaoshequ.com/@ericQ.atom" required>
+        <input type="url" id="url" placeholder="请输入有效的 URL，例如 https://jsonplaceholder.typicode.com/todos" required>
     </div>
 
     <div class="form-group">
@@ -140,9 +140,9 @@
         <label for="proxySelect">选择跨域代理:</label>
         <select id="proxySelect">
             <option value="">-- 请选择代理 --</option>
+           <option value="https://api.allorigins.win/raw?url=">Allorigins</option>    
             <option value="https://cors-anywhere.herokuapp.com/">CORS Anywhere</option>
             <option value="https://thingproxy.freeboard.io/fetch/">ThingProxy</option>
-            <option value="https://gitee.com/luke-smile/cors-anywhere/raw/master/proxy.cgi/">Gitee CORS Proxy</option> <!-- 新增的中国大陆可用代理 -->
             <option value="https://cors.bridged.cc/">CORS Bridged</option>
             <option value="custom">自定义代理</option>
         </select>
@@ -151,7 +151,6 @@
             <input type="text" id="proxyUrl" placeholder="请输入代理服务器的 URL，例如 https://你的代理.com/">
             <small>如果未填写，将使用默认代理。</small>
         </div>
-        <small style="color: red;">注意：<a href="https://cors.bridged.cc/" target="_blank">https://cors.bridged.cc/</a> 有访问次数限制。</small> <!-- 添加提示信息 -->
     </div>
 
     <div class="form-group checkbox-group">
@@ -159,7 +158,6 @@
         <label for="useJsonp">JSONP支持</label>
     </div>
 
-    <!-- 新增的 iframe 复选框 -->
     <div class="form-group checkbox-group">
         <input type="checkbox" id="useIframe">
         <label for="useIframe">使用 iframe 嵌入</label>
@@ -173,7 +171,7 @@
 </div>
 
 <footer>
-    &copy; 2025 由Eric创建
+    &copy; 2025 Eric
 </footer>
 
 <script>
@@ -219,22 +217,19 @@
             return;
         }
 
-        // 使用跨域代理
         let fetchUrl = urlInput;
         if (useProxy) {
             if (proxySelect) {
                 if (proxySelect === 'custom') {
                     if (proxyInput) {
-                        // 确保代理 URL 以 '/' 结尾
-                        fetchUrl = proxyInput.endsWith('/') ? proxyInput + urlInput : proxyInput + '/' + urlInput;
+                        fetchUrl = proxyInput + urlInput;
                     } else {
                         // 如果选择自定义但未输入，提示用户
                         responseDiv.innerHTML = '<p style="color: red;">请选择或输入有效的代理 URL。</p>';
                         return;
                     }
                 } else {
-                    // 确保代理 URL 以 '/' 结尾
-                    fetchUrl = proxySelect.endsWith('/') ? proxySelect + urlInput : proxySelect + '/' + urlInput;
+                    fetchUrl = proxySelect + urlInput;
                 }
             }
         }
