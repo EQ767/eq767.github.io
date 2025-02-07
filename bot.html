@@ -148,7 +148,7 @@
     const MAX_HISTORY = 20;
 
     // Fetch hash value from remote file (1.txt)
-    fetch('https://gh-proxy.com/https://raw.githubusercontent.com/EQ767/eq767.github.io/main/hjv/1.txt')
+    fetch('hjv/1.txt')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -185,7 +185,7 @@
             document.getElementById('chat-container').style.display = 'block';
 
             // Fetch API key from y.txt in hjv folder
-            fetch('https://gh-proxy.com/https://raw.githubusercontent.com/EQ767/eq767.github.io/main/hjv/y.txt')
+            fetch('hjv/y.txt')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
