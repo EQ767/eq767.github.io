@@ -1,272 +1,45 @@
-
-
-<!DOCTYPE html>
-<html lang="en">
-
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eric blog</title>
-    <meta name="description" content="这里是EQ767,即Eric博客,欢迎访问!">
-    <meta name="keywords" content="EQ767,Eric,blog">
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./css/viewer.min.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EricMusic</title>
+  <link rel="stylesheet" type="text/css" href="css/APlayer.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="apple-touch-icon" href="./img/icon-r.webp">
+  <meta name="apple-mobile-web-app-title" content="音乐">
+  <link rel="bookmark" href="./img/icon.webp">
+  <link rel="apple-touch-icon-precomposed" sizes="180x180" href="./img/icon-r.webp">
+  <meta name="description" content="一个简单好用的音乐播放器。">
+  <link rel="manifest" href="manifest.json"> 
+  <meta name="theme-color" content="#000000">
 </head>
-
 <body>
-
-    <!-- ALL -->
-    <div id="Indexbox">
-
-        <!-- 顶部菜单 -->
-        <div class="menu" id="menu">
-            <img src="/favicon.ico" alt="favicon">
-            <ul id="menuUL">
-                <li>
-                    <a href="https://ericq.rth1.xyz/" target="_blank">个人主页(L)</a>
-                </li>
-                <li>
-                    <a href="https://eq767.github.io/" target="_blank">Github站(O)</a>
-                </li>
-                <li>
-                    <a href="https://eq767.github.io/Music/" target="_blank">Music(V)</a>
-                </li>
-                <li>
-                    <a href="https://eq767.github.io/blog/Note.html" target="_blank">笔记(X)</a>
-                </li>
-                <li>
-                    <a href="https://eq767.github.io/tblog/" target="_blank">技术博客(H)</a>
-                </li>
-            </ul>
-            <p>Eric</p>
-        </div>
-
-        <!-- 左侧菜单按钮 -->
-        <div class="leftBar">
-            <div class="leftBar-ButtomMe" onclick="MeClick(true)"></div>
-            <div class="leftBar-ButtomMenu" id="leftBar-ButtomMenu" onclick="MenuClick(true)">
-                <div class="div1"></div>
-                <div class="div2"></div>
-                <div class="div3"></div>
-            </div>
-            <div class="leftBar-ButtomPages" id="menuPages" onclick="PagesClick(true)"></div>
-        </div>
-
-        <!-- 左侧拉出菜单 我 -->
-        <div class="leftBar-Me" id="leftBar-Me">
-            <div class="leftBar-ButtomClose" onclick="MeClick(false)">
-                <div class="div1"></div>
-                <div class="div2"></div>
-            </div>
-            <div class="img">
-                <img src="/favicon.ico" alt="Eric">
-            </div>
-            <div class="introduction">
-                <h1>Eric</h1>
-                <p>爱好计算机、摄影、国画。</p>
-                <p>即使前方的路看似绝境，也要有硬生生给自己开出一条路的勇气</p>
-            </div>
-			<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=110 src="https://music.163.com/outchain/player?type=0&id=2916766519&auto=0&height=90"></iframe>
-            <div class="connect">
-                <a href="https://eq767.github.io/ds.html">赏</a>
-                <a href="https://eq767.github.io/">站</a>
-            </div>
-        </div>
-
-        <!-- 左侧拉出菜单 顶部菜单 -->
-        <div class="leftBar-titleMenu" id="leftBar-titleMenu">
-            <div class="leftBar-ButtomClose" onclick="MenuClick(false)">
-                <div class="div1"></div>
-                <div class="div2"></div>
-            </div>
-            <h1>导航</h1>
-            <ul>
-                <li>
-                    <a href="https://ericq.rth1.xyz/" target="_blank">个人主页(L)</a>
-                </li>
-                <li>
-                    <a href="https://eq767.github.io/" target="_blank">Github站(O)</a>
-                </li>
-                <li>
-                    <a href="https://eq767.github.io/Music/" target="_blank">Music(V)</a>
-                </li>
-                <li>
-                    <a href="https://eq767.github.io/blog/Note.html" target="_blank">笔记(X)</a>
-                </li>
-                <li>
-                    <a href="https://eq767.github.io/tblog/" target="_blank">技术博客(H)</a>
-                </li>
-            </ul>
-        </div>
-
-        <!-- 左侧拉出菜单 页面 -->
-        <div class="leftBar-Pages" id="leftBar-Pages">
-            <div class="leftBar-ButtomClose" onclick="PagesClick(false)">
-                <div class="div1"></div>
-                <div class="div2"></div>
-            </div>
-            <div class="leftBar-Pages-box">
-                <h1>页面</h1>
-                <div class="leftBar-Pages-optine" id="leftBar-Pages-optine1"
-                    onclick="pages_title_option_click(1 ,false);PagesClick(false)">
-                    <img src="./img/user.png" alt="stuck_out_tongue">
-                    <p>My.md</p>
-                </div>
-                <div class="leftBar-Pages-optine" id="leftBar-Pages-optine2"
-                    onclick="pages_title_option_click(2, false);PagesClick(false)">
-                    <img src="./img/user.png" alt="stuck_out_tongue_closed_eyes">
-                    <p>2.md</p>
-                </div>
-                <div class="leftBar-Pages-optine" id="leftBar-Pages-optine3"
-                    onclick="pages_title_option_click(3 ,false);PagesClick(false)">
-                    <img src="./img/user.png" alt="stuck_out_tongue_winking_eye">
-                    <p>3.md</p>
-                </div>
-                <div class="leftBar-Pages-optine" id="leftBar-Pages-optine4"
-                    onclick="pages_title_option_click(4 ,false);PagesClick(false)">
-                    <img src="./img/user.png" alt="yum">
-                    <p>4.md</p>
-                </div>
-                <div class="leftBar-Pages-optine" id="leftBar-Pages-optine5"
-                    onclick="pages_title_option_click(5 ,false);PagesClick(false)">
-                    <img src="./img/life.png" alt="icecream">
-                    <p>My Life.md</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 页面版块1 -->
-        <div class="pages" id="pages">
-
-            <!-- 页面选项卡 -->
-            <div class="pages-title">
-                <div class="pages-title-option pages-title-option-click" id="pages-title-option1"
-                    onclick="pages_title_option_click(1, true)">
-                    <img src="./img/user.png" alt="stuck_out_tongue">
-                    <p>My.md</p>
-                </div>
-                <div class="pages-title-option" id="pages-title-option2" onclick="pages_title_option_click(2, true)">
-                    <img src="./img/user.png" alt="stuck_out_tongue_closed_eyes">
-                    <p>2.md</p>
-                </div>
-                <div class="pages-title-option" id="pages-title-option3" onclick="pages_title_option_click(3, true)">
-                    <img src="./img/user.png" alt="stuck_out_tongue_winking_eye">
-                    <p>3.md</p>
-                </div>
-                <div class="pages-title-option" id="pages-title-option4" onclick="pages_title_option_click(4, true)">
-                    <img src="./img/user.png" alt="yum">
-                    <p>4.md</p>
-                </div>
-                <div class="pages-title-option" id="pages-title-option5" onclick="pages_title_option_click(5, true)"
-                    style="display: none;">
-                    <img src="./img/life.png" alt="icecream">
-                    <p>hello world.md</p>
-                </div>
-            </div>
-
-            <!-- 页面 -->
-            <div class="pages-text pages-text-show" id="pages-text1">
-                <div class="pages-text-box">
-                    <h1>你好，我是Eric<br />热爱编程，摄影，国画。</h1>
-                    <div class="pages-text-box-img">
-                        <img src="./img/CHS.jpg.webp" alt="CSH" class="n0ts-img">
-                        <h6>去成都世园会玩</h6>
-                    </div>
-                    <p>很喜欢摄影，欣赏风景。</p>
-                    <div class="pages-text-box-img">
-                        <img src="./img/bi.jpg" alt="鸟窝" class="n0ts-img">
-                        <h6>捡了个鸟窝</h6>
-                    </div>
-                    <p>用照片记录下某一瞬间的美景，让开心的时刻得以永久保存。</p>
-                    <p>爱好摄影，想给自己留下一个个美好回忆。</p>
-                    <div class="pages-text-box-img">
-                        <img src="./img/cloud.jpg.webp" alt="海边风云" class="n0ts-img">
-                        <h6>某次旅游途中随手抓拍</h6>
-                    </div>
-                    <p>当然，我也很爱国画。</p>
-                    <p>技术一般，但是很热爱，</p>
-                    <p>一杆笔，宁静就在此刻。</p>
-                    <div class="pages-text-box-img">
-                        <img src="./img/lsland.jpg" alt="涠洲岛" class="n0ts-img">
-                        <h6>好康!</h6>
-                    </div>
-                </div>
-            </div>
-            <div class="pages-text" id="pages-text2">
-                <div class="pages-text-box">
-                    <h1>test2</h1>
-                </div>
-            </div>
-            <div class="pages-text" id="pages-text3">
-                <div class="pages-text-box">
-                    <h1>test3</h1>
-                </div>
-            </div>
-            <div class="pages-text" id="pages-text4">
-                <div class="pages-text-box">
-                    <h1>test4</h1>
-                </div>
-            </div>
-            <div class="pages-text" id="pages-text5">
-                <div class="pages-text-box">
-                    <h1>我与?</h1>
-                    <p>2018-11-19</p>
-                    <p>故事开始</p>
-                    <div class="pages-text-box-img">
-                        <img src="./img/Error.gif" alt="待开发的版块" class="n0ts-img">
-                        <h6>待开发的版块</h6>
-                    </div>
-                    <p>待开发的版块</p>
-                    <p id="6">?</p>
-                    <p>待开发的版块</p>
-                    <div class="pages-text-box-img">
-                        <img src="./img/Error.gif" alt="待开发的版块" class="n0ts-img">
-                        <h6>待开发的版块</h6>
-                    </div>
-                    <a href="/#" class="text-a" target="_blank">More?</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- 页面版块2 -->
-        <div class="pages pages2" id="pages2">
-
-            <!-- 页面选项卡 -->
-            <div class="pages-title pages-title2">
-                <div class="pages-title-option pages-title-option-click">
-                    <img src="./img/life.png" alt="icecream">
-                    <p>My Life.md</p>
-                </div>
-            </div>
-
-            <!-- 页面 -->
-            <div class="pages-text pages-text-show">
-                <div class="pages-text-box pages-text-box2">
-                    <h1>我与?</h1>
-                    <p>2018-11-19</p>
-                    <p>故事开始</p>
-                    <div class="pages-text-box-img">
-                        <img src="./img/Error.gif" alt="待开发的版块" class="n0ts-img">
-                        <h6>待开发的版块</h6>
-                    </div>
-                    <p>待开发的版块</p>
-                    <p id="6">?</p>
-                    <p>待开发的版块</p>
-                    <div class="pages-text-box-img">
-                        <img src="./img/Error.gif" alt="待开发的版块" class="n0ts-img">
-                        <h6>待开发的版块</h6>
-                    </div>
-            </div>
-
-        </div>
-    </div>
-
-
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
-    <script src="./js/N0ts.js"></script>
-    <script src="./js/viewer.min.js"></script>
-    <script src="./js//lovetime.js"></script>
-    <script>resize();</script>
+<div id="heoMusic-page">
+</div>
+<script>
+  var userId = "12930649240";
+  var userServer = "netease";
+  var userType = "playlist";
+  // var localMusic = [{
+  //     name: '重生之我在异乡为异客',
+  //     artist: '王睿卓',
+  //     url: '/music/重生之我在异乡为异客.mp3',
+  //     cover: '/music/重生之我在异乡为异客.png',
+  //     lrc: '/music/重生之我在异乡为异客.lrc'
+  // },
+  // {
+  //     name: '落',
+  //     artist: '唐伯虎',
+  //     url: '/music/落.mp3',
+  //     cover: '/music/落.png',
+  //     lrc: '/music/落.lrc'
+  // }
+  // ];
+  // var remoteMusic = "./musiclist.json"
+</script>
+<script src="js/APlayer.min.js"></script>
+<script async data-pjax src="js/main.js"></script>
 </body>
-
 </html>
