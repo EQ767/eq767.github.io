@@ -238,7 +238,6 @@
                 <p>📌 支持以下搜索方式：</p>
                 <ul>
                     <li>关键词搜索：用空格分隔多个关键词（例："设计 工具"）</li>
-                    <li>拼音搜索：支持首字母和全拼（例："sj" 或 "sheji"）</li>
                     <li>标签搜索：使用 # 前缀搜索特定标签（例："#办公"）</li>
                 </ul>
                 <p>🔍 排序规则：</p>
@@ -291,7 +290,10 @@
             const appList = document.getElementById("app-list");
             appList.innerHTML = "";
             if (apps.length === 0) {
-                appList.innerHTML = '<p style="text-align: center; color: #666;">未找到相关结果</p>';
+                appList.innerHTML = '<p style="text-align: center; color: #666;">失败，3秒后跳转...</p>';
+                setTimeout(() => {
+                    window.location.href = "/"; // 3秒后跳转到根目录
+                }, 3000);
                 return;
             }
             apps.forEach(app => {
@@ -310,18 +312,6 @@
             });
         }
 
-        const pinyinMap = {
-            'a': 'āáǎà', 'o': 'ōóǒò', 'e': 'ēéěè',
-            'i': 'īíǐì', 'u': 'ūúǔù', 'v': 'ǖǘǚǜ'
-        };
-
-        function toPinyin(cn) {
-            return cn.split('').map(c => {
-                const code = c.charCodeAt(0);
-                return code >= 19968 && code <= 40959 ? 'p' + (code - 19968).toString(36) : c;
-            }).join('');
-        }
-
         function search() {
             const query = document.getElementById("search-input").value.trim().toLowerCase();
             if (!query) {
@@ -332,19 +322,14 @@
 
             const keywords = query.split(/\s+/).map(k => {
                 if (k.startsWith('#')) return { type: 'tag', value: k.slice(1) };
-                return { 
-                    type: 'general',
-                    value: k,
-                    pinyin: toPinyin(k),
-                    initials: k.split('').filter(c => /[a-z]/.test(c)).join('')
-                };
+                return { type: 'general', value: k };
             });
 
             const filteredApps = initialApps.map(app => {
                 let score = 0;
                 let matchDetails = [];
 
-                keywords.forEach(({ type, value, pinyin, initials }) => {
+                keywords.forEach(({ type, value }) => {
                     if (type === 'tag') {
                         if (app.tags.some(t => t.toLowerCase().includes(value))) {
                             score += 30;
@@ -356,8 +341,6 @@
                     const nameMatch = app.name.toLowerCase();
                     if (nameMatch === value) score += 100;
                     else if (nameMatch.includes(value)) score += 50;
-                    else if (toPinyin(nameMatch).includes(pinyin)) score += 40;
-                    else if (toPinyin(nameMatch).includes(initials)) score += 30;
 
                     app.tags.forEach(tag => {
                         const tagMatch = tag.toLowerCase();
