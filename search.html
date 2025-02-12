@@ -30,6 +30,7 @@
             display: flex;
             justify-content: center;
             margin-bottom: 20px;
+            position: relative;
         }
         .search-bar input {
             width: 100%;
@@ -51,6 +52,17 @@
         }
         .search-bar button:hover {
             background-color: #45a049;
+        }
+        .help-icon {
+            width: 24px;
+            height: 24px;
+            cursor: help;
+            margin-left: 10px;
+            fill: #666;
+            transition: fill 0.3s;
+        }
+        .help-icon:hover {
+            fill: #4CAF50;
         }
         .app-list {
             display: grid;
@@ -103,7 +115,51 @@
             border-radius: 5px;
             font-size: 14px;
         }
-
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .modal-content {
+            position: relative;
+            background: white;
+            margin: 15vh auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 24px;
+            color: #666;
+        }
+        .close-btn:hover {
+            color: #333;
+        }
+        .help-content h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        .help-content p {
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+        .help-content ul {
+            padding-left: 20px;
+        }
+        .help-content li {
+            margin: 10px 0;
+        }
         @media (max-width: 768px) {
             h1 {
                 font-size: 1.5rem;
@@ -146,7 +202,6 @@
                 height: auto;
             }
         }
-
         @media (max-width: 320px) {
             .app-list {
                 grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -167,12 +222,32 @@
         <div class="search-bar" id="search-bar">
             <input type="text" id="search-input" placeholder="输入搜索内容..." onkeydown="handleKeyPress(event)">
             <button onclick="search()">搜索</button>
+            <svg class="help-icon" viewBox="0 0 24 24" onclick="showHelp()">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+            </svg>
         </div>
-        <div class="app-list" id="app-list">
-            <!-- 搜索结果会展示在这里 -->
-        </div>
-        <div id="gif-container" style="text-align: center; display: none;">
-            <!-- 失败状态会展示在这里 -->
+        <div class="app-list" id="app-list"></div>
+        <div id="gif-container" style="text-align: center; display: none;"></div>
+    </div>
+
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideHelp()">&times;</span>
+            <div class="help-content">
+                <h2>搜索使用指南</h2>
+                <p>📌 支持以下搜索方式：</p>
+                <ul>
+                    <li>关键词搜索：用空格分隔多个关键词（例："设计 工具"）</li>
+                    <li>拼音搜索：支持首字母和全拼（例："sj" 或 "sheji"）</li>
+                    <li>标签搜索：使用 # 前缀搜索特定标签（例："#办公"）</li>
+                </ul>
+                <p>🔍 排序规则：</p>
+                <ol>
+                    <li>名称完全匹配 > 名称部分匹配 > 标签匹配</li>
+                    <li>匹配关键词数量越多排名越靠前</li>
+                </ol>
+                <p>💡 小技巧：搜索结果为空时会自动显示全部内容</p>
+            </div>
         </div>
     </div>
 
@@ -182,9 +257,7 @@
         async function loadApps() {
             try {
                 const response = await fetch('so.json');
-                if (!response.ok) {
-                    throw new Error('Failed to load apps data');
-                }
+                if (!response.ok) throw new Error('Failed to load apps data');
                 initialApps = await response.json();
 
                 const urlParams = new URLSearchParams(window.location.search);
@@ -194,7 +267,7 @@
                     document.getElementById("search-input").value = query;
                     search();
                 } else {
-                    showFailureState();
+                    displayApps(initialApps);
                 }
             } catch (error) {
                 console.error('Error loading apps:', error);
@@ -237,32 +310,65 @@
             });
         }
 
+        const pinyinMap = {
+            'a': 'āáǎà', 'o': 'ōóǒò', 'e': 'ēéěè',
+            'i': 'īíǐì', 'u': 'ūúǔù', 'v': 'ǖǘǚǜ'
+        };
+
+        function toPinyin(cn) {
+            return cn.split('').map(c => {
+                const code = c.charCodeAt(0);
+                return code >= 19968 && code <= 40959 ? 'p' + (code - 19968).toString(36) : c;
+            }).join('');
+        }
+
         function search() {
             const query = document.getElementById("search-input").value.trim().toLowerCase();
             if (!query) {
-                window.location.href = 'search.html';
+                displayApps(initialApps);
+                updateUrl('');
                 return;
             }
 
-            const keywords = query.split(/\s+/);
-            const filteredApps = initialApps.filter(app => {
-                return keywords.some(keyword =>
-                    app.name.toLowerCase().includes(keyword) ||
-                    app.tags.some(tag => tag.toLowerCase().includes(keyword))
-                );
+            const keywords = query.split(/\s+/).map(k => {
+                if (k.startsWith('#')) return { type: 'tag', value: k.slice(1) };
+                return { 
+                    type: 'general',
+                    value: k,
+                    pinyin: toPinyin(k),
+                    initials: k.split('').filter(c => /[a-z]/.test(c)).join('')
+                };
             });
 
-            filteredApps.sort((a, b) => {
-                const aMatchCount = keywords.filter(keyword =>
-                    a.name.toLowerCase().includes(keyword) ||
-                    a.tags.some(tag => tag.toLowerCase().includes(keyword))
-                ).length;
-                const bMatchCount = keywords.filter(keyword =>
-                    b.name.toLowerCase().includes(keyword) ||
-                    b.tags.some(tag => tag.toLowerCase().includes(keyword))
-                ).length;
-                return bMatchCount - aMatchCount;
-            });
+            const filteredApps = initialApps.map(app => {
+                let score = 0;
+                let matchDetails = [];
+
+                keywords.forEach(({ type, value, pinyin, initials }) => {
+                    if (type === 'tag') {
+                        if (app.tags.some(t => t.toLowerCase().includes(value))) {
+                            score += 30;
+                            matchDetails.push('tag');
+                        }
+                        return;
+                    }
+
+                    const nameMatch = app.name.toLowerCase();
+                    if (nameMatch === value) score += 100;
+                    else if (nameMatch.includes(value)) score += 50;
+                    else if (toPinyin(nameMatch).includes(pinyin)) score += 40;
+                    else if (toPinyin(nameMatch).includes(initials)) score += 30;
+
+                    app.tags.forEach(tag => {
+                        const tagMatch = tag.toLowerCase();
+                        if (tagMatch === value) score += 20;
+                        else if (tagMatch.includes(value)) score += 10;
+                    });
+                });
+
+                return { ...app, score, matchDetails };
+            }).filter(app => app.score > 0)
+              .sort((a, b) => b.score - a.score);
 
             displayApps(filteredApps);
             updateUrl(query);
@@ -275,13 +381,23 @@
         }
 
         function handleKeyPress(event) {
-            if (event.key === "Enter") {
-                search();
-            }
+            if (event.key === "Enter") search();
         }
+
+        function showHelp() {
+            document.getElementById('helpModal').style.display = 'block';
+        }
+
+        function hideHelp() {
+            document.getElementById('helpModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('helpModal');
+            if (event.target === modal) hideHelp();
+        };
 
         window.onload = loadApps;
     </script>
 </body>
 </html>
-<!-- 67*254 (最小尺寸) -->
