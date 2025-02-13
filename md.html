@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>Markdown 编辑器</title>
+  <!-- 使用全球通用镜像站 -->
+  <script src="https://jsdelivr.qaq.qa/npm/marked/marked.min.js"></script>
+  <style>
+    /* 全局样式 */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background: #ecf0f1;
+    }
+    header {
+      background: #2c3e50;
+      color: #fff;
+      padding: 15px 20px;
+      text-align: center;
+    }
+    .container {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+    .editor, .preview {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .editor {
+      border-right: 1px solid #ddd;
+      background: #fff;
+    }
+    textarea {
+      width: 100%;
+      height: 100%;
+      border: none;
+      resize: none;
+      outline: none;
+      font-size: 16px;
+      line-height: 1.6;
+      font-family: Consolas, "Courier New", monospace;
+    }
+    .preview {
+      background: #fdfdfd;
+    }
+    /* 移动端适配 */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .editor {
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Markdown 编辑器</h1>
+  </header>
+  <div class="container">
+    <div class="editor">
+      <textarea id="mdInput" placeholder="在此输入 Markdown..."></textarea>
+    </div>
+    <div class="preview" id="mdPreview">
+      <!-- 预览内容将显示在这里 -->
+    </div>
+  </div>
+  <script>
+    const mdInput = document.getElementById('mdInput');
+    const mdPreview = document.getElementById('mdPreview');
+
+    // 实时更新预览内容
+    function updatePreview() {
+      const markdownText = mdInput.value;
+      // 使用 marked 库将 Markdown 转换为 HTML
+      mdPreview.innerHTML = marked.parse(markdownText);
+    }
+
+    // 监听输入事件
+    mdInput.addEventListener('input', updatePreview);
+
+    // 初始化示例内容
+    mdInput.value = ` <details>
+<summary>💭 <b>思考过程 (点击展开)</b></summary>
+
+嗯，用户问如何让母猪飞起来，这个问题看起来有点无厘头，但可能他们是想找一个创意或者幽默的解答。首先，我需要确认用户的需求是什么。可能他们是在寻找一个玩笑式的回答，或者真的在寻找某种科学方法，但考虑到母猪的体重和生理结构，实际飞行是不可能的，所以更有可能是前者。
+
+接下来，我应该考虑不同的方法，既有现实的科技手段，比如使用飞行器或无人机，也有虚构的元素，比如魔法或科幻设定。需要保持回答的趣味性，同时提供一些看似可行但实际上夸张的解决方案。比如用大量氦气球，或者改装滑翔翼，这些都是现实中可能的方法，但实际操作起来可能不切实际。
+
+还要注意安全性和伦理问题，虽然用户可能不需要严肃的答案，但作为回答者还是应该提醒这些方面，避免误导。比如提到安全风险和不建议尝试，这样既满足了用户的幽默需求，又保持了信息的准确性。
+
+另外，用户可能希望回答简短直接，所以分点列出不同的方法会比较清晰。使用一些幽默元素，比如“魔法翅膀”或者“反重力装置”，可以增加趣味性。同时，最后加入吐槽，比如“不过别试，母猪可能更想睡觉”，让整个回答更生动有趣。
+
+总结来说，需要平衡幽默和实际，提供多种创意方法，同时提醒现实中的不可行性，确保回答既有趣又不会误导用户。
+
+</details>
+
+
+简单粗暴版：
+
+1. **绑氦气球**——挂500个，母猪能上天  
+2. **改装滑翔翼**——配火箭助推器，瞬间起飞  
+3. **高空抛物**——找飞机空投，但母猪可能变培根  
+4. **量子力学**——直接说"根据薛定谔方程，母猪已在叠加态飞行"（手动狗头）  
+
+魔法方案：  
+- 喂食"飞天饲料"，吃完自动长翅膀  
+- 念咒语："母猪滞空，牛顿退散！"  
+
+(注：纯脑洞方案，现实请勿模仿，猪会报警)`;
+    updatePreview();
+  </script>
+</body>
+</html>
