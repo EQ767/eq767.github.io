@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智能天气预报</title>
+  <!-- 引入 Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* 重置样式及字体设置 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .container {
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 15px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      padding: 30px 20px 40px;
+      max-width: 900px;
+      width: 100%;
+      position: relative;
+    }
+    
+    /* 设置按钮样式 */
+    .settings-btn {
+      position: fixed;
+      right: 30px;
+      bottom: 30px;
+      width: 50px;
+      height: 50px;
+      background: #4b6cb7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+      transition: transform 0.3s ease;
+      font-size: 24px;
+      color: #fff;
+    }
+
+    .settings-btn:hover {
+      transform: rotate(90deg) scale(1.05);
+    }
+
+    /* 弹窗遮罩及样式 */
+    .modal-mask {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      display: none;
+    }
+
+    .settings-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      max-width: 90%;
+      width: 400px;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -45%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .close-btn {
+      cursor: pointer;
+      font-size: 24px;
+      color: #666;
+      transition: color 0.3s ease;
+    }
+
+    .close-btn:hover {
+      color: #333;
+    }
+
+    .city-input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #eee;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+
+    .city-input:focus {
+      outline: none;
+      border-color: #4b6cb7;
+    }
+
+    .confirm-btn {
+      background: #4b6cb7;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      float: right;
+    }
+
+    .confirm-btn:hover {
+      background: #3a5495;
+    }
+
+    .error-msg {
+      color: #e74c3c;
+      font-size: 14px;
+      margin-top: 10px;
+      display: none;
+    }
+    
+    /* 头部、天气摘要及详情样式 */
+    .header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    
+    .header h1 {
+      font-size: 30px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .header p {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 15px;
+    }
+    
+    .weather-summary {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 18px;
+      color: #444;
+    }
+    
+    .current-weather {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(75, 108, 183, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    .current-left {
+      display: flex;
+      align-items: center;
+    }
+    
+    .current-left img {
+      width: 100px;
+      height: 100px;
+      margin-right: 20px;
+    }
+    
+    .temp-info h2 {
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .temp-info p {
+      font-size: 16px;
+      color: #555;
+    }
+    
+    .current-right {
+      text-align: right;
+    }
+    
+    .current-right p {
+      margin: 6px 0;
+      font-size: 14px;
+      color: #555;
+    }
+    
+    .air-quality {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      color: #fff;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    
+    .alert {
+      color: #e74c3c;
+      font-weight: 500;
+      margin-top: 8px;
+    }
+    
+    /* Tab 切换预报区域 */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+    
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: border-color 0.3s ease;
+      font-size: 16px;
+    }
+    
+    .tab.active {
+      border-color: #4b6cb7;
+      font-weight: 700;
+    }
+    
+    /* 短期预报 - 网格布局 */
+    .forecast-short {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    
+    .forecast-day {
+      background: rgba(75, 108, 183, 0.08);
+      flex: 1 0 21%;
+      margin: 10px 5px;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      min-width: 100px;
+      transition: transform 0.3s ease;
+    }
+    
+    .forecast-day:hover {
+      transform: translateY(-5px);
+    }
+    
+    .forecast-day h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .forecast-day p {
+      font-size: 14px;
+      margin: 4px 0;
+    }
+    
+    .temp-range {
+      font-weight: 700;
+      color: #333;
+    }
+    
+    /* 长期预报 - 横向滚动 */
+    .forecast-long {
+      display: flex;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+    
+    .forecast-long .forecast-day {
+      flex: 0 0 auto;
+      margin: 0 8px;
+    }
+    
+    /* 滚动条美化（Webkit内核） */
+    .forecast-long::-webkit-scrollbar {
+      height: 8px;
+    }
+    .forecast-long::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 4px;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #888;
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .current-weather {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .current-left, .current-right {
+        margin-bottom: 15px;
+      }
+      
+      .forecast-short {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .forecast-day {
+        flex: none;
+        width: 80%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 设置按钮 -->
+    <div class="settings-btn">⚙️</div>
+
+    <!-- 弹窗遮罩 -->
+    <div class="modal-mask"></div>
+    <!-- 设置弹窗 -->
+    <div class="settings-modal">
+      <div class="modal-header">
+        <h3 class="modal-title">修改城市</h3>
+        <span class="close-btn">×</span>
+      </div>
+      <input type="text" class="city-input" placeholder="输入城市名称（如：北京）">
+      <button class="confirm-btn">确认修改</button>
+      <div class="error-msg"></div>
+    </div>
+
+    <!-- 页面主要结构 -->
+    <div class="header">
+      <h1 id="cityTitle">成都天气预报</h1>
+      <p id="fullAddress">四川 成都</p>
+    </div>
+    
+    <!-- 天气摘要展示 -->
+    <div class="weather-summary" id="weatherSummary">
+      <!-- 示例：2025年04月12日 成都 星期六 转阴 今日温度：19℃ ～ 11℃ -->
+    </div>
+    
+    <!-- 今日天气详情 -->
+    <div class="current-weather" id="currentWeather"></div>
+    
+    <!-- 预报 Tab 区域 -->
+    <div class="tabs">
+      <div class="tab active" data-tab="short">未来7天天气</div>
+      <div class="tab" data-tab="long">长期预报</div>
+    </div>
+    
+    <!-- 短期预报容器 -->
+    <div class="forecast-short" id="forecastShort"></div>
+    
+    <!-- 长期预报容器，初始隐藏 -->
+    <div class="forecast-long" id="forecastLong" style="display:none;"></div>
+    
+    <div class="footer" id="updateTime"></div>
+  </div>
+
+  <script>
+    // 天气服务模块
+    const weatherService = {
+      currentCity: '成都',
+      async getWeather(city = this.currentCity) {
+        try {
+          const res = await fetch(`https://api.ilingku.com/int/v1/weather?city=${encodeURIComponent(city)}`);
+          const data = await res.json();
+          if (data.code === 200) {
+            this.currentCity = city;
+            localStorage.setItem('lastCity', city);
+            return data;
+          }
+          throw new Error(data.msg || '天气数据获取失败');
+        } catch (error) {
+          throw new Error(`获取天气失败: ${error.message}`);
+        }
+      }
+    };
+
+    // UI 渲染模块
+    const render = {
+      showLoading() {
+        document.getElementById('currentWeather').innerHTML = `
+          <div class="loading-spinner" style="text-align:center; padding: 40px;">
+            <p>加载中...</p>
+          </div>
+        `;
+      },
+
+      updateWeather(data) {
+        // 更新头部信息
+        document.getElementById('cityTitle').textContent = `${data.data.address.split(' ')[1]}天气预报`;
+        document.getElementById('fullAddress').textContent = data.data.address;
+
+        // 天气摘要展示（直接使用 API txt 字段）
+        document.getElementById('weatherSummary').textContent = data.data.txt;
+
+        // 更新今日天气详情
+        const currentHTML = `
+          <div class="current-left">
+            <img src="${data.data.today.pic}" 
+                 class="weather-icon"
+                 onerror="this.src='https://placehold.co/120x120?text=天气图'">
+            <div class="temp-info">
+              <h2>${data.data.today.current_temp}</h2>
+              <p>${data.data.today.current_cond} · 当前温度</p>
+            </div>
+          </div>
+          <div class="current-right">
+            <span class="air-quality" style="background: ${this.getQualityColor(data.data.today.quality)}">
+              ${data.data.today.quality}
+            </span>
+            <p>今日温度: ${data.data.txt.match(/温度：(\d+℃)/)[1]} ~ ${data.data.today.low}</p>
+            <p>夜间天气: ${data.data.today.night_condition}</p>
+            <p>明日天气: ${data.data.today.tomorrow_condition}</p>
+            ${data.data.today.alert !== '暂无预警信息' ? `<p class="alert">${data.data.today.alert}</p>` : ''}
+          </div>
+        `;
+        document.getElementById('currentWeather').innerHTML = currentHTML;
+
+        // 更新短期预报（未来7天）
+        const shortForecast = data.data.seven_day.slice(0, 7).map(day => `
+          <div class="forecast-day">
+            <h3>${day.date.slice(5).replace('-', '月')}日</h3>
+            <p>${this.getWeekday(day.date)}</p>
+            <p>${day.cond}</p>
+            <p class="temp-range">${day.high} / ${day.low}</p>
+          </div>
+        `).join('');
+        document.getElementById('forecastShort').innerHTML = shortForecast;
+
+        // 更新长期预报（全部数据）
+        const longForecast = data.data.seven_day.map(day => `
+          <div class="forecast-day">
+            <h3>${day.date.slice(5).replace('-', '月')}日</h3>
+            <p>${this.getWeekday(day.date)}</p>
+            <p>${day.cond}</p>
+            <p class="temp-range">${day.high} / ${day.low}</p>
+          </div>
+        `).join('');
+        document.getElementById('forecastLong').innerHTML = longForecast;
+        
+        // 更新时间信息，提取日期
+        const updateDate = data.data.txt.match(/\d{4}年\d{2}月\d{2}日/)[0];
+        document.getElementById('updateTime').textContent = `数据更新时间: ${updateDate} · 当前城市: ${weatherService.currentCity}`;
+      },
+
+      getWeekday(dateStr) {
+        const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+        return days[new Date(dateStr).getDay()];
+      },
+
+      getQualityColor(quality) {
+        const colors = {
+          '优': '#4CAF50', '良': '#FFC107', '较差': '#FF5722',
+          '轻度污染': '#FF9800', '中度污染': '#F44336', 
+          '重度污染': '#9C27B0', '严重污染': '#673AB7'
+        };
+        return colors[quality] || '#607D8B';
+      },
+
+      showError(msg) {
+        document.getElementById('currentWeather').innerHTML = `
+          <div class="error-message" style="text-align:center; padding: 40px;">
+            <p>⚠️ ${msg}</p>
+            <button onclick="location.reload()">重试</button>
+          </div>
+        `;
+      }
+    };
+
+    // Tab 切换控制
+    const tabControl = {
+      init() {
+        document.querySelectorAll('.tab').forEach(tab => {
+          tab.addEventListener('click', (e) => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            e.target.classList.add('active');
+            const tabType = e.target.getAttribute('data-tab');
+            document.getElementById('forecastShort').style.display = tabType === 'short' ? 'flex' : 'none';
+            document.getElementById('forecastLong').style.display = tabType === 'long' ? 'flex' : 'none';
+          });
+        });
+      }
+    };
+
+    // 弹窗控制模块
+    const modalControl = {
+      init() {
+        document.querySelector('.settings-btn').addEventListener('click', () => this.toggleModal(true));
+        document.querySelector('.close-btn').addEventListener('click', () => this.toggleModal(false));
+        document.querySelector('.modal-mask').addEventListener('click', () => this.toggleModal(false));
+        document.querySelector('.confirm-btn').addEventListener('click', () => this.changeCity());
+        // ESC键关闭弹窗
+        document.addEventListener('keydown', (e) => {
+          if(e.key === 'Escape') this.toggleModal(false);
+        });
+      },
+      toggleModal(show) {
+        document.querySelector('.settings-modal').style.display = show ? 'block' : 'none';
+        document.querySelector('.modal-mask').style.display = show ? 'block' : 'none';
+        if(show) document.querySelector('.city-input').value = weatherService.currentCity;
+      },
+      async changeCity() {
+        const input = document.querySelector('.city-input');
+        const errorMsg = document.querySelector('.error-msg');
+        const city = input.value.trim();
+        if(!city) {
+          errorMsg.textContent = '请输入有效城市名称';
+          errorMsg.style.display = 'block';
+          return;
+        }
+        try {
+          this.toggleModal(false);
+          render.showLoading();
+          const data = await weatherService.getWeather(city);
+          render.updateWeather(data);
+        } catch (error) {
+          errorMsg.textContent = error.message;
+          errorMsg.style.display = 'block';
+          setTimeout(() => errorMsg.style.display = 'none', 3000);
+        }
+      }
+    };
+
+    // 初始化各模块
+    (async () => {
+      modalControl.init();
+      tabControl.init();
+      try {
+        const lastCity = localStorage.getItem('lastCity') || '成都';
+        const data = await weatherService.getWeather(lastCity);
+        render.updateWeather(data);
+      } catch (error) {
+        render.showError(error.message);
+      }
+    })();
+  </script>
+</body>
+</html>
